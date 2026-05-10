@@ -1,886 +1,455 @@
-id: evolution_system_ai
-name: Système d'Évolution avec IA
-type: html
-content: |-
-  <!DOCTYPE html>
-  <html lang="fr">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Système d'évolution - IA Enhanced</title>
-      <style>
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; padding: 10px; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { text-align: center; margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 15px; border: 2px solid rgba(255, 215, 0, 0.3); }
-          .header h1 { font-size: 24px; margin-bottom: 10px; color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-          .day-counter { font-size: 18px; color: #00d4ff; margin-bottom: 15px; }
-          .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-          .stat-card { background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
-          .stat-label { font-size: 12px; color: #aaa; margin-bottom: 5px; }
-          .stat-value { font-size: 24px; font-weight: bold; }
-          .level-bar { background: rgba(0, 0, 0, 0.3); height: 25px; border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3); }
-          .level-progress { height: 100%; background: linear-gradient(90deg, #ffd700, #ffed4e); transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; font-size: 12px; }
-          .attributes { margin-bottom: 30px; }
-          .attribute { margin-bottom: 15px; }
-          .attribute-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
-          .attribute-bar { background: rgba(0, 0, 0, 0.3); height: 20px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
-          .attribute-progress { height: 100%; transition: width 0.5s ease; }
-          .force-bar { background: linear-gradient(90deg, #ff4444, #ff6b6b); }
-          .intelligence-bar { background: linear-gradient(90deg, #4444ff, #6b6bff); }
-          .spirituel-bar { background: linear-gradient(90deg, #44ff44, #6bff6b); }
-          .discipline-bar { background: linear-gradient(90deg, #ff44ff, #ff6bff); }
-          .quest-card { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 2px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
-          .quest-card.completed { border-color: #00ff88; background: rgba(0, 255, 136, 0.1); }
-          .quest-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-          .quest-title { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-          .quest-icon { font-size: 24px; }
-          .quest-reward { background: rgba(255, 215, 0, 0.2); padding: 5px 10px; border-radius: 5px; font-size: 12px; color: #ffd700; }
-          .quest-objectives { margin-bottom: 15px; }
-          .objective { display: flex; align-items: center; gap: 10px; padding: 8px; margin-bottom: 5px; background: rgba(0, 0, 0, 0.2); border-radius: 5px; cursor: pointer; transition: all 0.2s ease; }
-          .objective:hover { background: rgba(255, 255, 255, 0.1); }
-          .objective.completed { opacity: 0.6; text-decoration: line-through; }
-          .checkbox { width: 20px; height: 20px; border: 2px solid #fff; border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-          .checkbox.checked { background: #00ff88; border-color: #00ff88; }
-          .checkbox.checked::after { content: '✓'; color: #000; font-weight: bold; }
-          .complete-quest-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #00d4ff, #0099cc); border: none; border-radius: 10px; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
-          .complete-quest-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4); }
-          .complete-quest-btn:disabled { background: #555; cursor: not-allowed; transform: none; }
-          .complete-quest-btn.completed { background: linear-gradient(135deg, #00ff88, #00cc6a); }
-          .perfect-day-banner { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; font-size: 20px; font-weight: bold; animation: pulse 2s infinite; }
-          @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-          .phase-info { background: rgba(0, 212, 255, 0.1); border: 1px solid #00d4ff; border-radius: 10px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.6; }
-          .phase-info h3 { color: #00d4ff; margin-bottom: 10px; font-size: 16px; }
-          .reset-btn { background: rgba(255, 0, 0, 0.2); border: 1px solid #ff4444; color: #ff4444; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; width: 100%; }
-          .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; }
-          .modal.active { display: flex; }
-          .modal-content { background: #16213e; padding: 30px; border-radius: 15px; border: 2px solid #ffd700; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center; margin: 20px; }
-          .modal-title { font-size: 24px; color: #ffd700; margin-bottom: 15px; }
-          .modal-text { margin-bottom: 20px; line-height: 1.6; }
-          .modal-buttons { display: flex; gap: 10px; }
-          .modal-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
-          .modal-btn-confirm { background: #00ff88; color: #000; }
-          .modal-btn-cancel { background: #ff4444; color: #fff; }
-          .title-display { font-size: 14px; color: #ffd700; font-style: italic; }
-          .phase-indicator { background: rgba(0, 212, 255, 0.2); border: 1px solid #00d4ff; padding: 8px 15px; border-radius: 20px; display: inline-block; margin-bottom: 10px; font-size: 12px; color: #00d4ff; }
-          .time-remaining { font-size: 14px; color: #ff6b35; margin-top: 10px; }
-          .history-btn { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: #ffd700; color: #000; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); transition: all 0.3s; z-index: 100; }
-          .history-btn:hover { transform: scale(1.1); }
-          .history-day { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 2px solid rgba(255, 215, 0, 0.3); text-align: left; }
-          .history-day h3 { color: #ffd700; margin-bottom: 15px; }
-          .history-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-          .history-stat { background: rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px; text-align: center; }
-          .history-stat-value { font-size: 20px; font-weight: bold; color: #00d4ff; }
-          .history-stat-label { font-size: 11px; color: #aaa; margin-top: 5px; }
-          .quest-summary { margin-top: 10px; font-size: 13px; color: #aaa; }
-          .activity-badge { padding: 5px 10px; border-radius: 5px; font-size: 11px; display: inline-block; margin-top: 10px; margin-right: 5px; }
-          .running-badge { background: rgba(255, 100, 50, 0.3); border: 1px solid #ff6432; color: #ff6432; }
-          .pullup-badge { background: rgba(100, 150, 255, 0.3); border: 1px solid #6496ff; color: #6496ff; }
-          .circuit-badge { background: rgba(255, 215, 0, 0.3); border: 1px solid #ffd700; color: #ffd700; }
-          .ai-badge { background: rgba(138, 43, 226, 0.3); border: 1px solid #8a2be2; color: #8a2be2; }
-          .change-workout-btn { width: 100%; padding: 10px; background: rgba(255, 165, 0, 0.2); border: 1px solid #ffa500; color: #ffa500; border-radius: 8px; font-size: 14px; cursor: pointer; margin-bottom: 15px; transition: all 0.3s; }
-          .change-workout-btn:hover { background: rgba(255, 165, 0, 0.3); transform: translateY(-1px); }
-          .ai-workout-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #8a2be2, #9b59b6); border: none; border-radius: 10px; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 15px; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-          .ai-workout-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(138, 43, 226, 0.4); }
-          .ai-workout-btn:disabled { background: #555; cursor: wait; }
-          .ai-workout-btn .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
-          .ai-workout-btn.loading .spinner { display: inline-block; }
-          @keyframes spin { to { transform: rotate(360deg); } }
-          .workout-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
-          .workout-option { padding: 15px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 10px; cursor: pointer; transition: all 0.3s; text-align: left; }
-          .workout-option:hover { border-color: #00d4ff; background: rgba(0, 212, 255, 0.1); }
-          .workout-option.selected { border-color: #00ff88; background: rgba(0, 255, 136, 0.1); }
-          .workout-option-title { font-weight: bold; color: #00d4ff; margin-bottom: 5px; }
-          .workout-option-desc { font-size: 12px; color: #aaa; }
-          .timer-btn { position: fixed; bottom: 20px; left: 20px; width: 60px; height: 60px; border-radius: 50%; background: #00d4ff; color: #000; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4); transition: all 0.3s; z-index: 100; }
-          .timer-btn:hover { transform: scale(1.1); }
-          .api-key-input { width: 100%; padding: 10px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
-          .api-key-input::placeholder { color: #888; }
-          .api-status { padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; }
-          .api-status.success { background: rgba(0, 255, 136, 0.2); border: 1px solid #00ff88; color: #00ff88; }
-          .api-status.error { background: rgba(255, 68, 68, 0.2); border: 1px solid #ff4444; color: #ff4444; }
-          .ai-advice { background: rgba(138, 43, 226, 0.1); border: 1px solid #8a2be2; border-radius: 10px; padding: 15px; margin-bottom: 15px; font-size: 13px; line-height: 1.6; }
-          .ai-advice-title { color: #8a2be2; font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-          .settings-btn { position: fixed; top: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 20px; cursor: pointer; transition: all 0.3s; z-index: 100; }
-          .settings-btn:hover { background: rgba(255, 255, 255, 0.2); transform: rotate(90deg); }
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <div class="header">
-              <div class="phase-indicator" id="phaseIndicator">Phase 1 : Fondations</div>
-              <h1>🎯 Système d'évolution</h1>
-              <div class="title-display" id="titleDisplay">L'Aspirant</div>
-              <div class="day-counter">Jour <span id="currentDay">1</span>/84</div>
-              <div class="time-remaining" id="timeRemaining"></div>
-          </div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Score Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-          <div class="stats-grid">
-              <div class="stat-card"><div class="stat-label">Niveau</div><div class="stat-value" id="level">1</div></div>
-              <div class="stat-card"><div class="stat-label">XP</div><div class="stat-value"><span id="currentXP">0</span>/<span id="maxXP">100</span></div></div>
-              <div class="stat-card"><div class="stat-label">Série 🔥</div><div class="stat-value" id="streak">0</div></div>
-              <div class="stat-card"><div class="stat-label">Jetons 💎</div><div class="stat-value" id="tokens">0</div></div>
-          </div>
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">⚡ Daily Score</div>
+      <div class="date-display" id="dateDisplay"></div>
+    </div>
+  </header>
 
-          <div class="level-bar"><div class="level-progress" id="levelProgress" style="width: 0%"><span id="levelProgressText">0%</span></div></div>
-
-          <div class="attributes">
-              <div class="attribute"><div class="attribute-header"><span>💪 Force</span><span><span id="forceValue">10</span> pts</span></div><div class="attribute-bar"><div class="attribute-progress force-bar" id="forceBar" style="width: 3.5%"></div></div></div>
-              <div class="attribute"><div class="attribute-header"><span>🧠 Intelligence</span><span><span id="intelligenceValue">10</span> pts</span></div><div class="attribute-bar"><div class="attribute-progress intelligence-bar" id="intelligenceBar" style="width: 3.5%"></div></div></div>
-              <div class="attribute"><div class="attribute-header"><span>🧘 Spirituel</span><span><span id="spirituelValue">10</span> pts</span></div><div class="attribute-bar"><div class="attribute-progress spirituel-bar" id="spirituelBar" style="width: 3.5%"></div></div></div>
-              <div class="attribute"><div class="attribute-header"><span>⚡ Discipline</span><span><span id="disciplineValue">10</span> pts</span></div><div class="attribute-bar"><div class="attribute-progress discipline-bar" id="disciplineBar" style="width: 3.5%"></div></div></div>
-          </div>
-
-          <div id="perfectDayBanner" style="display: none;" class="perfect-day-banner">🎉 JOURNÉE PARFAITE ! 🎉<br>Tous les objectifs complétés !</div>
-
-          <div class="phase-info" id="phaseInfo"><h3>📋 Programme du jour</h3><div id="phaseDescription"></div></div>
-
-          <div class="quest-card" id="questForce">
-              <div class="quest-header"><div class="quest-title"><span class="quest-icon">💪</span><span>Force</span></div><div class="quest-reward">+2 PTS +10 XP</div></div>
-              <div id="forceBadges"></div>
-              
-              <button class="ai-workout-btn" onclick="generateAIWorkout()">
-                  <span class="spinner"></span>
-                  <span>🤖 Générer entraînement IA personnalisé</span>
-              </button>
-              
-              <div id="aiAdvice" style="display: none;"></div>
-              
-              <button class="change-workout-btn" onclick="showWorkoutOptions()">🔄 Changer d'entraînement</button>
-              <div class="quest-objectives" id="forceObjectives"></div>
-              <button class="complete-quest-btn" onclick="completeQuest('force')">✅ Valider</button>
-          </div>
-
-          <div class="quest-card" id="questIntelligence">
-              <div class="quest-header"><div class="quest-title"><span class="quest-icon">🧠</span><span>Intelligence</span></div><div class="quest-reward">+2 PTS +10 XP</div></div>
-              <div class="quest-objectives" id="intelligenceObjectives"></div>
-              <button class="complete-quest-btn" onclick="completeQuest('intelligence')">✅ Valider</button>
-          </div>
-
-          <div class="quest-card" id="questSpirituel">
-              <div class="quest-header"><div class="quest-title"><span class="quest-icon">🧘</span><span>Spirituel</span></div><div class="quest-reward">+2 PTS +10 XP</div></div>
-              <div class="quest-objectives" id="spirituelObjectives"></div>
-              <button class="complete-quest-btn" onclick="completeQuest('spirituel')">✅ Valider</button>
-          </div>
-
-          <div class="quest-card" id="questDiscipline">
-              <div class="quest-header"><div class="quest-title"><span class="quest-icon">⚡</span><span>Discipline</span></div><div class="quest-reward">+2 PTS +10 XP</div></div>
-              <div class="quest-objectives" id="disciplineObjectives"></div>
-              <button class="complete-quest-btn" onclick="completeQuest('discipline')">✅ Valider</button>
-          </div>
-
-          <button class="reset-btn" onclick="showResetModal()">Réinitialiser le Système</button>
+  <!-- SCORE BANNER -->
+  <div class="score-banner" id="scoreBanner">
+    <div class="score-circle" id="scoreCircle">
+      <span class="score-number" id="scoreNumber">0%</span>
+      <span class="score-label">Score</span>
+    </div>
+    <div class="score-info">
+      <div class="score-level" id="scoreLevel">—</div>
+      <div class="score-sub" id="scoreSub">Commence à cocher tes habitudes</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar" id="scoreBar"></div>
       </div>
+    </div>
+  </div>
 
-      <button class="settings-btn" onclick="showSettings()">⚙️</button>
-      <button class="timer-btn" onclick="showTimer()">⏱️</button>
-      <button class="history-btn" onclick="showHistory()">📊</button>
+  <!-- MODULES CONTAINER -->
+  <main id="modulesContainer">
+    <!-- Les modules sont injectés par modules.js -->
+  </main>
 
-      <!-- Modal Paramètres API -->
-      <div class="modal" id="settingsModal">
-          <div class="modal-content">
-              <div class="modal-title">⚙️ Paramètres IA</div>
-              <div class="modal-text" style="text-align: left;">
-                  <p style="margin-bottom: 15px;">Pour utiliser la génération d'entraînements par IA, configure ta clé API Gemini (gratuite) :</p>
-                  <ol style="margin-bottom: 15px; padding-left: 20px; line-height: 1.8;">
-                      <li>Va sur <a href="https://makersuite.google.com/app/apikey" target="_blank" style="color: #00d4ff;">Google AI Studio</a></li>
-                      <li>Crée une clé API gratuite</li>
-                      <li>Colle-la ci-dessous</li>
-                  </ol>
-              </div>
-              <input type="text" id="apiKeyInput" class="api-key-input" placeholder="Colle ta clé API Gemini ici...">
-              <div id="apiStatus" class="api-status" style="display: none;"></div>
-              <div class="modal-buttons">
-                  <button class="modal-btn modal-btn-cancel" onclick="closeSettings()">Annuler</button>
-                  <button class="modal-btn modal-btn-confirm" onclick="saveApiKey()">Enregistrer</button>
-              </div>
-          </div>
-      </div>
+  <!-- FOOTER -->
+  <footer>
+    <button class="btn-reset" onclick="resetDay()">🔄 Réinitialiser la journée</button>
+    <p class="footer-note">Les données sont sauvegardées localement dans ton navigateur.</p>
+  </footer>
 
-      <!-- Modal Workout Options -->
-      <div class="modal" id="workoutModal">
-          <div class="modal-content">
-              <div class="modal-title">🏋️ Choisir ton entraînement</div>
-              <div class="modal-text">Sélectionne l'entraînement que tu peux faire aujourd'hui :</div>
-              <div class="workout-options" id="workoutOptions"></div>
-              <div class="modal-buttons">
-                  <button class="modal-btn modal-btn-cancel" onclick="closeWorkoutModal()">Annuler</button>
-                  <button class="modal-btn modal-btn-confirm" onclick="confirmWorkoutChange()">Confirmer</button>
-              </div>
-          </div>
-      </div>
+  <script src="modules.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+/* =============================================
+   DAILY SCORE TRACKER — style.css
+   ============================================= */
 
-      <!-- Modal History -->
-      <div class="modal" id="historyModal">
-          <div class="modal-content">
-              <div class="modal-title">📊 Historique de ton évolution</div>
-              <div id="historyContent"></div>
-              <button class="modal-btn modal-btn-confirm" onclick="closeHistory()" style="width: 100%; margin-top: 20px;">Fermer</button>
-          </div>
-      </div>
-
-      <!-- Modal Timer -->
-      <div class="modal" id="timerModal">
-          <div class="modal-content" style="max-width: 600px;">
-              <div class="modal-title">⏱️ Chronométre d'Entraînement</div>
-              <div class="modal-text">Fonctionnalité à venir...</div>
-              <button class="modal-btn modal-btn-confirm" onclick="closeTimer()" style="width: 100%;">Fermer</button>
-          </div>
-      </div>
-
-      <!-- Modal Reset -->
-      <div class="modal" id="resetModal">
-          <div class="modal-content">
-              <div class="modal-title">⚠️ Réinitialisation</div>
-              <div class="modal-text">Es-tu sûr de vouloir réinitialiser tout ton progrès ?<br>Cette action est irréversible.</div>
-              <div class="modal-buttons">
-                  <button class="modal-btn modal-btn-cancel" onclick="closeResetModal()">Annuler</button>
-                  <button class="modal-btn modal-btn-confirm" onclick="confirmReset()">Confirmer</button>
-              </div>
-          </div>
-      </div>
-
-      <!-- Modal Level Up -->
-      <div class="modal" id="levelUpModal">
-          <div class="modal-content">
-              <div class="modal-title">🎉 LEVEL UP ! 🎉</div>
-              <div class="modal-text" id="levelUpText"></div>
-              <button class="modal-btn modal-btn-confirm" onclick="closeLevelUpModal()" style="width: 100%;">Continuer</button>
-          </div>
-      </div>
-
-      <script>
-          const LEVELS = [
-              {xp:0,title:"L'Aspirant",bonus:""},
-              {xp:100,title:"Le Disciple",bonus:"+5% XP"},
-              {xp:250,title:"L'Apprenti Déterminé",bonus:"Carte Récup bonus"},
-              {xp:450,title:"Le Pratiquant Assidu",bonus:"Objectifs bonus"},
-              {xp:700,title:"L'Adepte Discipliné",bonus:"+10% XP"},
-              {xp:1000,title:"Le Guerrier de l'Habitude",bonus:"-2 min exercices"},
-              {xp:1350,title:"Le Maître en Devenir",bonus:"+15% XP"},
-              {xp:1750,title:"Le Champion Personnel",bonus:"Mode élite"},
-              {xp:2200,title:"L'Architecte de Soi",bonus:"Objectifs perso"},
-              {xp:2700,title:"Le Souverain Éveillé",bonus:"Maîtrise totale"}
-          ];
-          
-          const PROGRAMMES = {
-              phase1: {
-                  name:"Phase 1 : Fondations",
-                  desc:"Établir les bases solides - 15 min par objectif",
-                  forceCircuits: [
-                      {name:"Circuit Classique",type:"circuit",exercises:[{t:"10 Pompes (genoux ok)",c:"0/10"},{t:"15 Squats",c:"0/15"},{t:"20 sec Planche",c:"0/20s"},{t:"10 Fentes par jambe",c:"0/20"},{t:"15 Abdos crunch",c:"0/15"},{t:"Répéter 3 circuits",c:"0/3"}]},
-                      {name:"Circuit Dynamique",type:"circuit",exercises:[{t:"12 Pompes inclinées",c:"0/12"},{t:"20 Squats avec pause",c:"0/20"},{t:"15 sec Planche x2",c:"0/2"},{t:"12 Fentes arrière/jambe",c:"0/24"},{t:"20 Relevés de jambes",c:"0/20"},{t:"Répéter 3 circuits",c:"0/3"}]},
-                      {name:"Circuit Endurance",type:"circuit",exercises:[{t:"8 Pompes lentes",c:"0/8"},{t:"25 Squats rapides",c:"0/25"},{t:"30 sec Planche genou-coude",c:"0/30s"},{t:"15 Fentes latérales/jambe",c:"0/30"},{t:"20 Abdos bicyclette",c:"0/20"},{t:"Répéter 3 circuits",c:"0/3"}]}
-                  ],
-                  forceRunning:{name:"Running 5km",type:"running",exercises:[{t:"🏃 Running 5km minimum",c:"0/5km"},{t:"Échauffement 5 min",c:"✓"},{t:"Étirements 5 min",c:"✓"}]},
-                  forcePullUps:{name:"Tractions Débutant",type:"pullups",exercises:[{t:"5 Tractions négatives",c:"0/5"},{t:"10 Tractions australiennes",c:"0/10"},{t:"20 sec Suspension barre",c:"0/20s"},{t:"10 Pompes",c:"0/10"},{t:"15 Rowing inversé",c:"0/15"},{t:"Répéter 3 circuits",c:"0/3"}]},
-                  intelligence:[{t:"10 min : 1 leçon Duolingo (débutant)",c:"✓"},{t:"5 min : 1 Sudoku facile",c:"✓"}],
-                  spirituel:[{t:"5 min cohérence cardiaque",c:"0/5min"},{t:"8 min méditation guidée",c:"0/8min"},{t:"2 min gratitude (3 choses)",c:"0/2min"}],
-                  discipline:[{t:"Faire son lit au réveil",c:"✓"},{t:"Boire 1 verre d'eau",c:"✓"},{t:"Noter 3 priorités du jour",c:"✓"},{t:"Identifier tâche difficile",c:"✓"},{t:"Visualiser journée (2 min)",c:"✓"},{t:"Revue du soir",c:"✓"},{t:"Préparer vêtements demain",c:"✓"}]
-              },
-              phase2: {
-                  name:"Phase 2 : Progression",
-                  desc:"Augmenter l'intensité - 20 min par objectif",
-                  forceCircuits:[
-                      {name:"Circuit Force",type:"circuit",exercises:[{t:"15 Pompes standard",c:"0/15"},{t:"20 Squats sautés",c:"0/20"},{t:"30 sec Planche",c:"0/30s"},{t:"15 Fentes sautées/jambe",c:"0/30"},{t:"20 Abdos bicyclette",c:"0/20"},{t:"10 Burpees",c:"0/10"},{t:"Répéter 3 circuits",c:"0/3"}]},
-                      {name:"Circuit Explosivité",type:"circuit",exercises:[{t:"12 Pompes claquées",c:"0/12"},{t:"15 Squats jump + maintien",c:"0/15"},{t:"25 sec Planche latérale x2",c:"0/2"},{t:"20 Fentes bulgares/jambe",c:"0/40"},{t:"15 Mountain climbers",c:"0/30s"},{t:"12 Burpees",c:"0/12"},{t:"Répéter 3 circuits",c:"0/3"}]},
-                      {name:"Circuit Résistance",type:"circuit",exercises:[{t:"20 Pompes tempo",c:"0/20"},{t:"30 Squats avec pause",c:"0/30"},{t:"40 sec Planche levée jambe",c:"0/40s"},{t:"15 Fentes marchées/jambe",c:"0/30"},{t:"25 Crunchs inversés",c:"0/25"},{t:"15 Burpees",c:"0/15"},{t:"Répéter 3 circuits",c:"0/3"}]}
-                  ],
-                  forceRunning:{name:"Running 5km",type:"running",exercises:[{t:"🏃 Running 5km minimum",c:"0/5km"},{t:"Échauffement 5 min",c:"✓"},{t:"Étirements 5 min",c:"✓"}]},
-                  forcePullUps:{name:"Tractions Intermédiaire",type:"pullups",exercises:[{t:"3-5 Tractions complètes",c:"0/5"},{t:"8 Tractions négatives",c:"0/8"},{t:"12 Tractions australiennes",c:"0/12"},{t:"30 sec Suspension active",c:"0/30s"},{t:"15 Pompes",c:"0/15"},{t:"Répéter 4 circuits",c:"0/4"}]},
-                  intelligence:[{t:"10 min : 1 leçon Duolingo (intermédiaire)",c:"✓"},{t:"5 min : 1 Sudoku moyen",c:"✓"}],
-                  spirituel:[{t:"5 min cohérence cardiaque",c:"0/5min"},{t:"10 min méditation non-guidée",c:"0/10min"},{t:"3 min journaling émotionnel",c:"0/3min"},{t:"2 min gratitude approfondie",c:"0/2min"}],
-                  discipline:[{t:"Routine matinale < 10 min",c:"✓"},{t:"Pas de téléphone 30 min",c:"✓"},{t:"Manger la grenouille en 1er",c:"✓"},{t:"3 blocs focus sans distraction",c:"0/3"},{t:"Dire non à 1 distraction",c:"✓"},{t:"Revue du soir détaillée",c:"✓"},{t:"Préparer demain (10 min)",c:"✓"}]
-              },
-              phase3: {
-                  name:"Phase 3 : Maîtrise",
-                  desc:"Atteindre l'excellence - 25 min par objectif",
-                  forceCircuits:[
-                      {name:"Circuit Puissance",type:"circuit",exercises:[{t:"20 Pompes diamant",c:"0/20"},{t:"25 Squats pistol",c:"0/25"},{t:"45 sec Planche",c:"0/45s"},{t:"20 Fentes bulgares/jambe",c:"0/40"},{t:"25 Abdos V-ups",c:"0/25"},{t:"15 Burpees",c:"0/15"},{t:"30 sec Mountain climbers",c:"0/30s"},{t:"Répéter 3 circuits",c:"0/3"}]},
-                      {name:"Circuit Technique",type:"circuit",exercises:[{t:"15 Pompes archer x2",c:"0/30"},{t:"20 Squats sautés + rotation",c:"0/20"},{t:"30 sec Planche + latérale",c:"0/2"},{t:"25 Fentes sautées alternées",c:"0/25"},{t:"20 Abdos complets",c:"0/20"},{t:"20 Burpees avec pompe",c:"0/20"},{t:"40 sec Mountain climbers",c:"0/40s"},{t:"Répéter 3 circuits",c:"0/3"}]},
-                      {name:"Circuit Intensité",type:"circuit",exercises:[{t:"25 Pompes déclinées",c:"0/25"},{t:"30 Squats jump",c:"0/30"},{t:"60 sec Planche RKC",c:"0/60s"},{t:"15 Fentes bulgares sautées/jambe",c:"0/30"},{t:"30 Hollow body hold",c:"0/30s"},{t:"25 Burpees",c:"0/25"},{t:"30 sec Sprint sur place",c:"0/30s"},{t:"Répéter 3 circuits",c:"0/3"}]}
-                  ],
-                  forceRunning:{name:"Running 5km",type:"running",exercises:[{t:"🏃 Running 5km minimum",c:"0/5km"},{t:"Échauffement 5 min",c:"✓"},{t:"Étirements 5 min",c:"✓"}]},
-                  forcePullUps:{name:"Tractions Avancé",type:"pullups",exercises:[{t:"8-10 Tractions complètes",c:"0/10"},{t:"5 Tractions lentes",c:"0/5"},{t:"3 Tractions L-sit",c:"0/3"},{t:"45 sec Suspension",c:"0/45s"},{t:"20 Pompes déclinées",c:"0/20"},{t:"Répéter 4 circuits",c:"0/4"}]},
-                  intelligence:[{t:"10 min : 1 leçon Duolingo (avancé)",c:"✓"},{t:"5 min : 1 Sudoku difficile",c:"✓"}],
-                  spirituel:[{t:"7 min cohérence cardiaque",c:"0/7min"},{t:"15 min méditation profonde",c:"0/15min"},{t:"5 min journaling introspectif",c:"0/5min"},{t:"3 min visualisation objectifs",c:"0/3min"}],
-                  discipline:[{t:"Routine matinale optimisée",c:"✓"},{t:"Pas de téléphone 1h",c:"✓"},{t:"Grenouille + tâche bonus",c:"✓"},{t:"4 blocs focus Pomodoro",c:"0/4"},{t:"Dire non à 2 distractions",c:"0/2"},{t:"Revue hebdomadaire (si dim.)",c:"✓"},{t:"Planification semaine",c:"✓"},{t:"Préparer demain (15 min)",c:"✓"}]
-              }
-          };
-
-          let gameState = {
-              level:1,
-              xp:0,
-              currentDay:1,
-              streak:0,
-              tokens:0,
-              attributes:{force:10,intelligence:10,spirituel:10,discipline:10},
-              quests:{force:false,intelligence:false,spirituel:false,discipline:false},
-              objectivesChecked:{},
-              startDate:null,
-              lastCompletedDate:null,
-              history:[],
-              currentForceWorkout:null,
-              selectedWorkoutTemp:null,
-              apiKey:null,
-              aiWorkouts:[],
-              lastAIAdvice:null
-          };
-
-          function getTodayLocal(){
-              const now=new Date();
-              return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-          }
-          
-          function saveGameState(){
-              localStorage.setItem('evolutionSystem',JSON.stringify(gameState));
-          }
-          
-          function loadGameState(){
-              const saved=localStorage.getItem('evolutionSystem');
-              if(saved){
-                  gameState=JSON.parse(saved);
-              }else{
-                  gameState.startDate=getTodayLocal();
-              }
-              checkNewDay();
-          }
-          
-          function checkNewDay(){
-              const today=getTodayLocal();
-              if(gameState.startDate!==today){
-                  const questsCompleted=Object.values(gameState.quests).filter(q=>q===true).length;
-                  const isPerfectDay=questsCompleted===4;
-                  gameState.history.push({
-                      day:gameState.currentDay,
-                      date:gameState.startDate,
-                      quests:{...gameState.quests},
-                      questsCompleted:questsCompleted,
-                      isPerfectDay:isPerfectDay,
-                      level:gameState.level,
-                      xp:gameState.xp,
-                      attributes:{...gameState.attributes},
-                      workoutType:gameState.currentForceWorkout
-                  });
-                  if(questsCompleted>=3){
-                      gameState.streak++;
-                  }else{
-                      gameState.streak=0;
-                  }
-                  gameState.currentDay++;
-                  gameState.startDate=today;
-                  gameState.quests={force:false,intelligence:false,spirituel:false,discipline:false};
-                  gameState.objectivesChecked={};
-                  gameState.lastCompletedDate=null;
-                  gameState.currentForceWorkout=null;
-                  gameState.lastAIAdvice=null;
-                  saveGameState();
-              }
-          }
-          
-          function getCurrentPhase(){
-              if(gameState.currentDay<=28)return 'phase1';
-              if(gameState.currentDay<=56)return 'phase2';
-              return 'phase3';
-          }
-          
-          function isRunningDay(){
-              return[2,4,6].includes(new Date().getDay());
-          }
-          
-          function isPullUpDay(){
-              return[1,4].includes(new Date().getDay());
-          }
-          
-          function getDefaultForceWorkout(){
-              const phase=getCurrentPhase();
-              const programme=PROGRAMMES[phase];
-              if(isRunningDay()){
-                  return programme.forceRunning;
-              }else if(isPullUpDay()){
-                  return programme.forcePullUps;
-              }else{
-                  return programme.forceCircuits[(gameState.currentDay-1)%3];
-              }
-          }
-          
-          function getCurrentForceWorkout(){
-              if(gameState.currentForceWorkout){
-                  const phase=getCurrentPhase();
-                  const programme=PROGRAMMES[phase];
-                  if(gameState.currentForceWorkout==='running'){
-                      return programme.forceRunning;
-                  }else if(gameState.currentForceWorkout==='pullups'){
-                      return programme.forcePullUps;
-                  }else if(gameState.currentForceWorkout.startsWith('circuit')){
-                      return programme.forceCircuits[parseInt(gameState.currentForceWorkout.replace('circuit',''))];
-                  }else if(gameState.currentForceWorkout==='ai'){
-                      // Retourner le dernier workout IA généré
-                      const lastAI = gameState.aiWorkouts[gameState.aiWorkouts.length - 1];
-                      if(lastAI) return lastAI;
-                  }
-              }
-              return getDefaultForceWorkout();
-          }
-          
-          function showWorkoutOptions(){
-              const phase=getCurrentPhase();
-              const programme=PROGRAMMES[phase];
-              const optionsContainer=document.getElementById('workoutOptions');
-              optionsContainer.innerHTML='';
-              
-              const runningDiv=document.createElement('div');
-              runningDiv.className='workout-option';
-              runningDiv.onclick=()=>selectWorkout('running');
-              runningDiv.innerHTML=`<div class="workout-option-title">🏃 ${programme.forceRunning.name}</div><div class="workout-option-desc">Course à pied 5km minimum</div>`;
-              optionsContainer.appendChild(runningDiv);
-              
-              const pullUpsDiv=document.createElement('div');
-              pullUpsDiv.className='workout-option';
-              pullUpsDiv.onclick=()=>selectWorkout('pullups');
-              pullUpsDiv.innerHTML=`<div class="workout-option-title">💪 ${programme.forcePullUps.name}</div><div class="workout-option-desc">Développement du dos et bras</div>`;
-              optionsContainer.appendChild(pullUpsDiv);
-              
-              programme.forceCircuits.forEach((circuit,index)=>{
-                  const circuitDiv=document.createElement('div');
-                  circuitDiv.className='workout-option';
-                  circuitDiv.onclick=()=>selectWorkout('circuit'+index);
-                  circuitDiv.innerHTML=`<div class="workout-option-title">🏋️ ${circuit.name}</div><div class="workout-option-desc">Circuit au poids du corps</div>`;
-                  optionsContainer.appendChild(circuitDiv);
-              });
-              
-              document.getElementById('workoutModal').classList.add('active');
-          }
-          
-          function selectWorkout(type){
-              document.querySelectorAll('.workout-option').forEach(el=>el.classList.remove('selected'));
-              event.currentTarget.classList.add('selected');
-              gameState.selectedWorkoutTemp=type;
-          }
-          
-          function confirmWorkoutChange(){
-              if(gameState.selectedWorkoutTemp){
-                  gameState.currentForceWorkout=gameState.selectedWorkoutTemp;
-                  gameState.objectivesChecked={};
-                  saveGameState();
-                  updateUI();
-                  closeWorkoutModal();
-              }else{
-                  alert('Sélectionne un entraînement !');
-              }
-          }
-          
-          function closeWorkoutModal(){
-              document.getElementById('workoutModal').classList.remove('active');
-              gameState.selectedWorkoutTemp=null;
-          }
-
-          // ============ FONCTIONS IA ============
-          
-          function showSettings(){
-              document.getElementById('settingsModal').classList.add('active');
-              if(gameState.apiKey){
-                  document.getElementById('apiKeyInput').value = gameState.apiKey;
-                  showApiStatus('Clé API enregistrée ✓', 'success');
-              }
-          }
-          
-          function closeSettings(){
-              document.getElementById('settingsModal').classList.remove('active');
-          }
-          
-          function saveApiKey(){
-              const apiKey = document.getElementById('apiKeyInput').value.trim();
-              if(!apiKey){
-                  showApiStatus('Veuillez entrer une clé API', 'error');
-                  return;
-              }
-              gameState.apiKey = apiKey;
-              saveGameState();
-              showApiStatus('Clé API enregistrée avec succès ! 🎉', 'success');
-              setTimeout(closeSettings, 2000);
-          }
-          
-          function showApiStatus(message, type){
-              const status = document.getElementById('apiStatus');
-              status.textContent = message;
-              status.className = `api-status ${type}`;
-              status.style.display = 'block';
-          }
-          
-          async function generateAIWorkout(){
-              if(!gameState.apiKey){
-                  alert('⚠️ Configure d\'abord ta clé API Gemini dans les paramètres (⚙️)');
-                  showSettings();
-                  return;
-              }
-              
-              const btn = document.querySelector('.ai-workout-btn');
-              btn.classList.add('loading');
-              btn.disabled = true;
-              
-              try {
-                  const phase = getCurrentPhase();
-                  const recentHistory = gameState.history.slice(-7);
-                  
-                  const prompt = `Tu es un coach sportif expert. Génère un entraînement personnalisé au poids du corps.
-
-PROFIL DE L'ATHLÈTE :
-- Niveau actuel : ${gameState.level} (${LEVELS[gameState.level-1].title})
-- Jour d'entraînement : ${gameState.currentDay}/84
-- Phase : ${PROGRAMMES[phase].name}
-- Force : ${gameState.attributes.force} pts
-- Série actuelle : ${gameState.streak} jours
-- Historique 7 derniers jours : ${recentHistory.length} jours complétés
-
-CONTRAINTES :
-- Durée : 15-20 minutes maximum
-- Matériel : Aucun (poids du corps uniquement)
-- Lieu : Maison ou extérieur
-- Niveau : ${phase === 'phase1' ? 'Débutant à intermédiaire' : phase === 'phase2' ? 'Intermédiaire' : 'Avancé'}
-
-GÉNÈRE UN CIRCUIT avec :
-1. 5-7 exercices variés (haut du corps, bas du corps, core, cardio)
-2. Nombre de répétitions ou durée pour chaque exercice
-3. Nombre de circuits à répéter (3-4)
-4. Un conseil motivationnel personnalisé basé sur sa progression
-
-FORMAT DE RÉPONSE (JSON strict) :
-{
-  "name": "Nom du circuit",
-  "exercises": [
-    {"t": "Description exercice", "c": "0/reps ou 0/durée"},
-    ...
-  ],
-  "advice": "Conseil motivationnel personnalisé (2-3 phrases)"
+:root {
+  --bg: #0f0f13;
+  --surface: #1a1a24;
+  --surface2: #22222f;
+  --border: #2e2e3e;
+  --accent: #7c6af7;
+  --accent2: #5eead4;
+  --text: #e8e8f0;
+  --text-muted: #7a7a9a;
+  --green: #4ade80;
+  --yellow: #facc15;
+  --orange: #fb923c;
+  --red: #f87171;
+  --radius: 16px;
+  --radius-sm: 10px;
 }
 
-IMPORTANT : Réponds UNIQUEMENT avec le JSON, sans texte avant ou après.`;
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-                  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${gameState.apiKey}`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                          contents: [{
-                              parts: [{ text: prompt }]
-                          }]
-                      })
-                  });
-                  
-                  if(!response.ok){
-                      throw new Error('Erreur API Gemini');
-                  }
-                  
-                  const data = await response.json();
-                  const aiText = data.candidates[0].content.parts[0].text;
-                  
-                  // Nettoyer le texte pour extraire le JSON
-                  let jsonText = aiText.trim();
-                  if(jsonText.startsWith('```json')){
-                      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-                  }
-                  if(jsonText.startsWith('```')){
-                      jsonText = jsonText.replace(/```\n?/g, '');
-                  }
-                  
-                  const aiWorkout = JSON.parse(jsonText);
-                  
-                  // Créer le workout au bon format
-                  const newWorkout = {
-                      name: aiWorkout.name || "Circuit IA Personnalisé",
-                      type: "ai",
-                      exercises: aiWorkout.exercises || []
-                  };
-                  
-                  // Sauvegarder le workout et le conseil
-                  gameState.aiWorkouts.push(newWorkout);
-                  gameState.lastAIAdvice = aiWorkout.advice || "Donne tout aujourd'hui ! 💪";
-                  gameState.currentForceWorkout = 'ai';
-                  gameState.objectivesChecked = {};
-                  saveGameState();
-                  
-                  // Afficher le conseil IA
-                  displayAIAdvice(gameState.lastAIAdvice);
-                  
-                  updateUI();
-                  
-              } catch(error) {
-                  console.error('Erreur génération IA:', error);
-                  alert('❌ Erreur lors de la génération. Vérifie ta clé API dans les paramètres.');
-              } finally {
-                  btn.classList.remove('loading');
-                  btn.disabled = false;
-              }
-          }
-          
-          function displayAIAdvice(advice){
-              const container = document.getElementById('aiAdvice');
-              container.innerHTML = `
-                  <div class="ai-advice">
-                      <div class="ai-advice-title">🤖 Conseil de ton Coach IA</div>
-                      <div>${advice}</div>
-                  </div>
-              `;
-              container.style.display = 'block';
-          }
-          
-          // ============ FIN FONCTIONS IA ============
-          
-          function updateUI(){
-              document.getElementById('currentDay').textContent=gameState.currentDay;
-              document.getElementById('level').textContent=gameState.level;
-              document.getElementById('currentXP').textContent=gameState.xp;
-              document.getElementById('streak').textContent=gameState.streak;
-              document.getElementById('tokens').textContent=gameState.tokens;
-              
-              const currentLevel=LEVELS[gameState.level-1];
-              const nextLevel=LEVELS[gameState.level]||LEVELS[LEVELS.length-1];
-              const maxXP=nextLevel.xp-currentLevel.xp;
-              const currentXPInLevel=gameState.xp-currentLevel.xp;
-              const progress=Math.min((currentXPInLevel/maxXP)*100,100);
-              
-              document.getElementById('maxXP').textContent=maxXP;
-              document.getElementById('levelProgress').style.width=progress+'%';
-              document.getElementById('levelProgressText').textContent=Math.round(progress)+'%';
-              document.getElementById('titleDisplay').textContent=currentLevel.title;
-              
-              ['force','intelligence','spirituel','discipline'].forEach(attr=>{
-                  const value=gameState.attributes[attr];
-                  document.getElementById(attr+'Value').textContent=value;
-                  const barProgress=Math.min((value/280)*100,100);
-                  document.getElementById(attr+'Bar').style.width=barProgress+'%';
-              });
-              
-              const phase=getCurrentPhase();
-              const programme=PROGRAMMES[phase];
-              document.getElementById('phaseIndicator').textContent=programme.name;
-              document.getElementById('phaseDescription').textContent=programme.desc;
-              
-              // Afficher le conseil IA si disponible
-              if(gameState.lastAIAdvice && gameState.currentForceWorkout === 'ai'){
-                  displayAIAdvice(gameState.lastAIAdvice);
-              } else {
-                  document.getElementById('aiAdvice').style.display = 'none';
-              }
-              
-              const forceWorkout=getCurrentForceWorkout();
-              const forceObjectives=forceWorkout.exercises;
-              const container=document.getElementById('forceObjectives');
-              container.innerHTML='';
-              
-              forceObjectives.forEach((obj,index)=>{
-                  const isChecked=gameState.objectivesChecked['force_'+index];
-                  const div=document.createElement('div');
-                  div.className='objective'+(isChecked?' completed':'');
-                  div.onclick=()=>toggleObjective('force',index);
-                  div.innerHTML=`<div class="checkbox${isChecked?' checked':''}"></div><span>${obj.t}</span>`;
-                  container.appendChild(div);
-              });
-              
-              const badgesContainer=document.getElementById('forceBadges');
-              badgesContainer.innerHTML='';
-              
-              if(forceWorkout.type==='running'){
-                  badgesContainer.innerHTML='<span class="activity-badge running-badge">🏃 Jour de running : 5km minimum</span>';
-              }else if(forceWorkout.type==='pullups'){
-                  badgesContainer.innerHTML='<span class="activity-badge pullup-badge">💪 Jour Tractions : Développe ton dos !</span>';
-              }else if(forceWorkout.type==='ai'){
-                  badgesContainer.innerHTML='<span class="activity-badge ai-badge">🤖 Circuit IA Personnalisé</span>';
-              }else{
-                  badgesContainer.innerHTML=`<span class="activity-badge circuit-badge">🏋️ ${forceWorkout.name}</span>`;
-              }
-              
-              ['intelligence','spirituel','discipline'].forEach(questType=>{
-                  const objectives=programme[questType];
-                  const container=document.getElementById(questType+'Objectives');
-                  container.innerHTML='';
-                  objectives.forEach((obj,index)=>{
-                      const isChecked=gameState.objectivesChecked[questType+'_'+index];
-                      const div=document.createElement('div');
-                      div.className='objective'+(isChecked?' completed':'');
-                      div.onclick=()=>toggleObjective(questType,index);
-                      div.innerHTML=`<div class="checkbox${isChecked?' checked':''}"></div><span>${obj.t}</span>`;
-                      container.appendChild(div);
-                  });
-              });
-              
-              ['force','intelligence','spirituel','discipline'].forEach(questType=>{
-                  const questCard=document.getElementById('quest'+questType.charAt(0).toUpperCase()+questType.slice(1));
-                  const btn=questCard.querySelector('.complete-quest-btn');
-                  if(gameState.quests[questType]){
-                      questCard.classList.add('completed');
-                      btn.textContent='✅ Complété';
-                      btn.classList.add('completed');
-                      btn.disabled=true;
-                  }else{
-                      questCard.classList.remove('completed');
-                      btn.textContent='✅ Valider';
-                      btn.classList.remove('completed');
-                      btn.disabled=false;
-                  }
-              });
-              
-              const allCompleted=Object.values(gameState.quests).every(q=>q===true);
-              document.getElementById('perfectDayBanner').style.display=allCompleted?'block':'none';
-          }
-          
-          function toggleObjective(questType,index){
-              checkNewDay();
-              const key=questType+'_'+index;
-              gameState.objectivesChecked[key]=!gameState.objectivesChecked[key];
-              saveGameState();
-              updateUI();
-          }
-          
-          function completeQuest(questType){
-              checkNewDay();
-              if(gameState.quests[questType]){
-                  alert('Cet objectif est déjà complété aujourd\'hui !');
-                  return;
-              }
-              
-              const today=getTodayLocal();
-              if(gameState.lastCompletedDate===today){
-                  const completedCount=Object.values(gameState.quests).filter(q=>q===true).length;
-                  if(completedCount>=4){
-                      alert('Tu as déjà validé tous tes objectifs aujourd\'hui !');
-                      return;
-                  }
-              }
-              
-              gameState.quests[questType]=true;
-              gameState.lastCompletedDate=today;
-              gameState.attributes[questType]+=2;
-              gameState.xp+=10;
-              
-              const allCompleted=Object.values(gameState.quests).every(q=>q===true);
-              if(allCompleted&&gameState.lastCompletedDate===today){
-                  gameState.xp+=10;
-                  gameState.tokens+=1;
-              }
-              
-              checkLevelUp();
-              saveGameState();
-              updateUI();
-          }
-          
-          function checkLevelUp(){
-              const nextLevel=LEVELS[gameState.level];
-              if(nextLevel&&gameState.xp>=nextLevel.xp){
-                  gameState.level++;
-                  showLevelUpModal();
-              }
-          }
-          
-          function showLevelUpModal(){
-              const level=LEVELS[gameState.level-1];
-              document.getElementById('levelUpText').innerHTML=`<p style="font-size: 48px; margin: 20px 0;">🎉</p><p style="font-size: 24px; margin-bottom: 10px;">Niveau ${gameState.level}</p><p style="font-size: 18px; color: #ffd700; margin-bottom: 20px;">${level.title}</p><p style="font-size: 14px; color: #aaa;">${level.bonus}</p>`;
-              document.getElementById('levelUpModal').classList.add('active');
-          }
-          
-          function closeLevelUpModal(){
-              document.getElementById('levelUpModal').classList.remove('active');
-          }
-          
-          function updateTimeRemaining(){
-              const now
-=new Date();
-              const tomorrow=new Date(now);
-              tomorrow.setDate(tomorrow.getDate()+1);
-              tomorrow.setHours(0,0,0,0);
-              const diff=tomorrow-now;
-              const hours=Math.floor(diff/(1000*60*60));
-              const minutes=Math.floor((diff%(1000*60*60))/(1000*60));
-              document.getElementById('timeRemaining').textContent=`⏰ ${hours}h ${minutes}min avant minuit`;
-          }
-          
-          function showHistory(){
-              checkNewDay();
-              const content=document.getElementById('historyContent');
-              if(gameState.history.length===0){
-                  content.innerHTML='<p style="color: #aaa; padding: 20px;">Aucun historique pour le moment.<br>Complète ta première journée !</p>';
-              }else{
-                  content.innerHTML=gameState.history.slice().reverse().map(day=>{
-                      let workoutBadge='';
-                      if(day.workoutType==='running')workoutBadge='🏃 Running';
-                      else if(day.workoutType==='pullups')workoutBadge='💪 Tractions';
-                      else if(day.workoutType==='ai')workoutBadge='🤖 IA Personnalisé';
-                      else if(day.workoutType&&day.workoutType.startsWith('circuit'))workoutBadge='🏋️ Circuit';
-                      
-                      return `<div class="history-day">
-                          <h3>Jour ${day.day} - ${new Date(day.date).toLocaleDateString('fr-FR')}</h3>
-                          <div class="quest-summary">
-                              ${day.quests.force?'✅':'❌'} Force | 
-                              ${day.quests.intelligence?'✅':'❌'} Intelligence | 
-                              ${day.quests.spirituel?'✅':'❌'} Spirituel | 
-                              ${day.quests.discipline?'✅':'❌'} Discipline
-                              ${day.isPerfectDay?'<br><strong style="color: #ffd700;">🎉 JOURNÉE PARFAITE</strong>':''}
-                              ${workoutBadge?'<br><span style="color: #00d4ff;">'+workoutBadge+'</span>':''}
-                          </div>
-                          <div class="history-stats">
-                              <div class="history-stat">
-                                  <div class="history-stat-value">${day.questsCompleted}/4</div>
-                                  <div class="history-stat-label">Objectifs</div>
-                              </div>
-                              <div class="history-stat">
-                                  <div class="history-stat-value">Niv. ${day.level}</div>
-                                  <div class="history-stat-label">Niveau</div>
-                              </div>
-                              <div class="history-stat">
-                                  <div class="history-stat-value">${day.xp}</div>
-                                  <div class="history-stat-label">XP Total</div>
-                              </div>
-                              <div class="history-stat">
-                                  <div class="history-stat-value">${day.attributes.force}</div>
-                                  <div class="history-stat-label">Force</div>
-                              </div>
-                          </div>
-                      </div>`;
-                  }).join('');
-              }
-              document.getElementById('historyModal').classList.add('active');
-          }
-          
-          function closeHistory(){
-              document.getElementById('historyModal').classList.remove('active');
-          }
-          
-          function showTimer(){
-              document.getElementById('timerModal').classList.add('active');
-          }
-          
-          function closeTimer(){
-              document.getElementById('timerModal').classList.remove('active');
-          }
-          
-          function showResetModal(){
-              document.getElementById('resetModal').classList.add('active');
-          }
-          
-          function closeResetModal(){
-              document.getElementById('resetModal').classList.remove('active');
-          }
-          
-          function confirmReset(){
-              if(confirm('⚠️ DERNIÈRE CONFIRMATION : Tout sera perdu !')){
-                  localStorage.removeItem('evolutionSystem');
-                  location.reload();
-              }
-          }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
 
-          // Initialisation
-          setInterval(function(){
-              checkNewDay();
-              updateUI();
-              updateTimeRemaining();
-          },60000);
-          
-          window.onload=function(){
-              loadGameState();
-              updateUI();
-              updateTimeRemaining();
-              setInterval(updateTimeRemaining,10000);
-          };
-      </script>
-  </body>
-  </html>
+/* HEADER */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo { font-size: 1.2rem; font-weight: 700; }
+.date-display { font-size: 0.85rem; color: var(--text-muted); }
+
+/* SCORE BANNER */
+.score-banner {
+  max-width: 720px;
+  margin: 24px auto 0;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.score-circle {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  border: 4px solid var(--accent);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.4s;
+}
+.score-number { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+.score-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+.score-info { flex: 1; }
+.score-level { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.score-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; }
+.score-bar-wrap {
+  background: var(--border);
+  border-radius: 99px; height: 8px; overflow: hidden;
+}
+.score-bar {
+  height: 100%; border-radius: 99px;
+  background: var(--accent); width: 0%;
+  transition: width 0.5s ease, background 0.4s;
+}
+
+/* MAIN */
+main {
+  max-width: 720px;
+  margin: 20px auto 0;
+  padding: 0 16px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+/* MODULE CARD */
+.module-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.module-card.complete { border-color: var(--green); }
+
+.module-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  cursor: pointer; user-select: none;
+}
+.module-header-left { display: flex; align-items: center; gap: 12px; }
+.module-icon { font-size: 1.4rem; }
+.module-title { font-size: 1rem; font-weight: 700; }
+.module-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.module-score-badge {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 4px 12px;
+  font-size: 0.8rem; font-weight: 700;
+}
+.module-chevron {
+  color: var(--text-muted); font-size: 0.8rem;
+  margin-left: 8px; transition: transform 0.3s;
+}
+.module-card.open .module-chevron { transform: rotate(180deg); }
+
+.module-body {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+}
+.module-card.open .module-body { display: block; }
+
+/* ITEMS */
+.item-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+
+.item-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  border: 1px solid transparent;
+}
+.item-row:hover { background: #2a2a3a; }
+.item-row:active { transform: scale(0.98); }
+.item-row.checked { border-color: var(--accent); background: rgba(124,106,247,0.1); }
+
+.custom-checkbox {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s; font-size: 0.75rem;
+}
+.item-row.checked .custom-checkbox { background: var(--accent); border-color: var(--accent); }
+
+.item-text { flex: 1; font-size: 0.88rem; }
+.item-points { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+.item-row.checked .item-points { color: var(--accent); }
+
+/* MODULE PROGRESS BAR */
+.module-progress-wrap {
+  margin-top: 14px;
+  background: var(--border);
+  border-radius: 99px; height: 6px; overflow: hidden;
+}
+.module-progress-bar {
+  height: 100%; border-radius: 99px;
+  background: var(--accent); transition: width 0.4s ease;
+}
+
+/* FOOTER */
+footer { max-width: 720px; margin: 32px auto 0; padding: 0 16px; text-align: center; }
+.btn-reset {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 10px 24px; border-radius: 99px;
+  cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
+}
+.btn-reset:hover { border-color: var(--red); color: var(--red); }
+.footer-note { font-size: 0.72rem; color: var(--text-muted); margin-top: 10px; }
+
+/* SCORE COLORS */
+.level-excellent .score-circle { border-color: var(--green); }
+.level-excellent .score-bar { background: var(--green); }
+.level-excellent .score-level { color: var(--green); }
+.level-solid .score-circle { border-color: var(--accent2); }
+.level-solid .score-bar { background: var(--accent2); }
+.level-solid .score-level { color: var(--accent2); }
+.level-correct .score-circle { border-color: var(--yellow); }
+.level-correct .score-bar { background: var(--yellow); }
+.level-correct .score-level { color: var(--yellow); }
+.level-difficult .score-circle { border-color: var(--red); }
+.level-difficult .score-bar { background: var(--red); }
+.level-difficult .score-level { color: var(--red); }
+
+@media (max-width: 500px) {
+  .score-banner { flex-direction: column; text-align: center; }
+  .score-info { width: 100%; }
+}
+/* =============================================
+   DAILY SCORE TRACKER — modules.js
+   =============================================
+   👉 AJOUTER UN MODULE : copie un bloc { ... }
+   dans le tableau MODULES à l'endroit voulu.
+   ============================================= */
+
+const MODULES = [
+
+  /* ── 1. SOMMEIL ─────────────────────────────── */
+  {
+    id: "sommeil",
+    icon: "🌙",
+    title: "Sommeil",
+    subtitle: "Coucher fixe · 8h · Pas d'écrans · Repas 4h avant",
+    items: [
+      { id: "s1", label: "Coucher et réveil à heures fixes (±30 min)", points: 5 },
+      { id: "s2", label: "8h de sommeil minimum", points: 5 },
+      { id: "s3", label: "Écrans coupés 1h avant le coucher", points: 5 },
+      { id: "s4", label: "Dernier repas 4h avant le coucher", points: 5 },
+    ]
+  },
+
+  /* ── 2. SPORT ────────────────────────────────── */
+  {
+    id: "sport",
+    icon: "🏋️",
+    title: "Sport",
+    subtitle: "Entraînement · Intensité · Récupération active",
+    items: [
+      { id: "sp1", label: "Entraînement fait (muscu ou cardio)", points: 10 },
+      { id: "sp2", label: "Intensité suffisante (essoufflement ou charges)", points: 10 },
+      { id: "sp3", label: "Récupération active (marche, mobilité)", points: 10 },
+    ]
+  },
+
+  /* ════════════════════════════════════════════
+     👉 INSÈRE TON MODULE DISCIPLINE ICI
+     {
+       id: "discipline",
+       icon: "🎯",
+       title: "Discipline",
+       subtitle: "Organisation · Tâches · Focus",
+       items: [
+         { id: "d1", label: "Tâche 1 accomplie", points: 5 },
+         { id: "d2", label: "Tâche 2 accomplie", points: 5 },
+       ]
+     },
+     ════════════════════════════════════════════ */
+
+  /* ── 3. NUTRITION ────────────────────────────── */
+  {
+    id: "nutrition",
+    icon: "🍽️",
+    title: "Nutrition",
+    subtitle: "Protéines · Légumes · Huile d'olive · Eau · Dîner tôt",
+    items: [
+      { id: "n1", label: "3 repas protéinés dans la journée", points: 7 },
+      { id: "n2", label: "Légumes à 2 repas minimum", points: 7 },
+      { id: "n3", label: "Huile d'olive à tous les repas", points: 7 },
+      { id: "n4", label: "Dîner 4h avant le coucher", points: 7 },
+      { id: "n5", label: "2,5 L d'eau dans la journée", points: 7 },
+    ]
+  },
+
+  /* ── 4. BONUS ────────────────────────────────── */
+  {
+    id: "bonus",
+    icon: "⭐",
+    title: "Bonus",
+    subtitle: "Alcool · Sucre · Lumière · Thermique · Écrans",
+    items: [
+      { id: "b1", label: "Pas d'alcool aujourd'hui", points: 3 },
+      { id: "b2", label: "Pas de sucre ajouté", points: 3 },
+      { id: "b3", label: "Exposition lumière vive matinale 20-30 min", points: 3 },
+      { id: "b4", label: "Récupération thermique (sauna / douche froide)", points: 3 },
+      { id: "b5", label: "Écrans coupés 1h avant le coucher", points: 3 },
+    ]
+  },
+
+];
+/* =============================================
+   DAILY SCORE TRACKER — app.js
+   ============================================= */
+
+function todayKey() {
+  return "dst_" + new Date().toISOString().slice(0, 10);
+}
+function loadState() {
+  const raw = localStorage.getItem(todayKey());
+  return raw ? JSON.parse(raw) : {};
+}
+function saveState(state) {
+  localStorage.setItem(todayKey(), JSON.stringify(state));
+}
+function formatDate() {
+  return new Date().toLocaleDateString("fr-FR", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+}
+function computeScore(state) {
+  let total = 0, earned = 0;
+  MODULES.forEach(mod => {
+    mod.items.forEach(item => {
+      total += item.points;
+      if (state[item.id]) earned += item.points;
+    });
+  });
+  return total === 0 ? 0 : Math.round((earned / total) * 100);
+}
+function getLevel(score) {
+  if (score >= 85) return { cls: "level-excellent", label: "🏆 Journée EXCELLENTE", sub: "Âge biologique qui baisse — continue !" };
+  if (score >= 70) return { cls: "level-solid",     label: "💪 Journée SOLIDE",     sub: "Maintenance optimale — très bien !" };
+  if (score >= 50) return { cls: "level-correct",   label: "✅ Journée CORRECTE",   sub: "Pas de régression — continue demain !" };
+  return               { cls: "level-difficult",  label: "⚠️ Journée DIFFICILE",  sub: "Rattrape-toi demain, tu peux le faire !" };
+}
+function updateScoreBanner(score) {
+  document.getElementById("scoreNumber").textContent = score + "%";
+  document.getElementById("scoreBar").style.width    = score + "%";
+  const lv = getLevel(score);
+  document.getElementById("scoreBanner").className   = "score-banner " + lv.cls;
+  document.getElementById("scoreLevel").textContent  = lv.label;
+  document.getElementById("scoreSub").textContent    = lv.sub;
+}
+function updateModuleUI(modId) {
+  const state = loadState();
+  const mod   = MODULES.find(m => m.id === modId);
+  if (!mod) return;
+  let total = 0, earned = 0;
+  mod.items.forEach(i => { total += i.points; if (state[i.id]) earned += i.points; });
+  const pct = total === 0 ? 0 : Math.round((earned / total) * 100);
+  const badge = document.getElementById("badge_" + modId);
+  const bar   = document.getElementById("bar_"   + modId);
+  const card  = document.getElementById("card_"  + modId);
+  if (badge) badge.textContent   = pct + "% (" + earned + "/" + total + " pts)";
+  if (bar)   bar.style.width     = pct + "%";
+  if (card)  card.classList.toggle("complete", pct === 100);
+}
+function toggleItem(itemId, modId) {
+  const state = loadState();
+  state[itemId] = !state[itemId];
+  saveState(state);
+  const row = document.getElementById("row_" + itemId);
+  const chk = document.getElementById("chk_" + itemId);
+  if (row) row.classList.toggle("checked", !!state[itemId]);
+  if (chk) chk.textContent = state[itemId] ? "✓" : "";
+  updateModuleUI(modId);
+  updateScoreBanner(computeScore(state));
+}
+function toggleModule(modId) {
+  const card = document.getElementById("card_" + modId);
+  if (card) card.classList.toggle("open");
+}
+function resetDay() {
+  if (!confirm("Réinitialiser toutes les cases de la journée ?")) return;
+  localStorage.removeItem(todayKey());
+  renderAll();
+}
+function buildModuleHTML(mod, state) {
+  const itemsHTML = mod.items.map(item => {
+    const checked = !!state[item.id];
+    return `
+      <div class="item-row ${checked ? "checked" : ""}" id="row_${item.id}"
+           onclick="toggleItem('${item.id}', '${mod.id}')">
+        <div class="custom-checkbox" id="chk_${item.id}">${checked ? "✓" : ""}</div>
+        <span class="item-text">${item.label}</span>
+        <span class="item-points">+${item.points} pts</span>
+      </div>`;
+  }).join("");
+  let total = 0, earned = 0;
+  mod.items.forEach(i => { total += i.points; if (state[i.id]) earned += i.points; });
+  const pct = total === 0 ? 0 : Math.round((earned / total) * 100);
+  return `
+    <div class="module-card ${pct === 100 ? "complete" : ""}" id="card_${mod.id}">
+      <div class="module-header" onclick="toggleModule('${mod.id}')">
+        <div class="module-header-left">
+          <span class="module-icon">${mod.icon}</span>
+          <div>
+            <div class="module-title">${mod.title}</div>
+            <div class="module-subtitle">${mod.subtitle}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="module-score-badge" id="badge_${mod.id}">${pct}% (${earned}/${total} pts)</span>
+          <span class="module-chevron">▼</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="module-progress-wrap">
+          <div class="module-progress-bar" id="bar_${mod.id}" style="width:${pct}%"></div>
+        </div>
+        <div class="item-list">${itemsHTML}</div>
+      </div>
+    </div>`;
+}
+function renderAll() {
+  const state = loadState();
+  document.getElementById("modulesContainer").innerHTML =
+    MODULES.map(mod => buildModuleHTML(mod, state)).join("");
+  updateScoreBanner(computeScore(state));
+  document.getElementById("dateDisplay").textContent = formatDate();
+}
+document.addEventListener("DOMContentLoaded", renderAll);
