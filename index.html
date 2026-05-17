@@ -1,5 +1,5 @@
 id: hunter-system
-name: Hunter System — RPG Fitness
+name: Hunter System — RPG Fitness v3
 type: html
 content: |-
   <!DOCTYPE html>
@@ -7,760 +7,829 @@ content: |-
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hunter System — RPG Fitness</title>
+    <title>Hunter System</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        color: #e0e0e0; min-height: 100vh; padding: 20px;
+      * { margin:0; padding:0; box-sizing:border-box; }
+      :root {
+        --bg: #0f1923; --bg2: #1a2535; --bg3: #1e2d42;
+        --accent: #00d4ff; --accent2: #0099cc;
+        --green: #2ed573; --orange: #ffa502; --red: #ff4757;
+        --purple: #a29bfe; --text: #e0e0e0; --muted: #7f8c9a;
+        --nav-h: 65px;
       }
-      .container { max-width: 900px; margin: 0 auto; }
-      header {
-        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-        padding: 25px; border-radius: 15px; margin-bottom: 25px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.4); position: relative; overflow: hidden;
-      }
-      header::before {
-        content: ''; position: absolute; top: -50%; right: -50%;
-        width: 200%; height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-        animation: pulse 4s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 0.3; }
-        50% { transform: scale(1.1); opacity: 0.5; }
-      }
-      .header-content { position: relative; z-index: 1; }
-      .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-      h1 { font-size: 2em; color: #00d4ff; text-shadow: 0 0 20px rgba(0,212,255,0.5); }
-      .header-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-      .stats-btn {
-        background: linear-gradient(135deg, #00d4ff, #0099cc);
-        border: none; color: #fff; padding: 10px 18px;
-        border-radius: 8px; cursor: pointer; font-size: 1em; transition: all 0.3s;
-      }
-      .stats-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,212,255,0.5); }
-      .settings-btn {
-        background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2);
-        color: #fff; padding: 10px 18px; border-radius: 8px; cursor: pointer;
-        font-size: 1em; transition: all 0.3s;
-      }
-      .settings-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-      .niveau-btn {
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
-        border: 2px solid #6366f1; color: #fff; padding: 10px 18px;
-        border-radius: 8px; cursor: pointer; font-size: 1em; transition: all 0.3s;
-      }
-      .niveau-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(99,102,241,0.5); }
+      body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: var(--nav-h); }
 
-      /* HEADER COMPACT : Polar + infos */
-      .header-compact {
-        background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px;
-        border: 2px solid rgba(0,212,255,0.2); margin-bottom: 15px;
-        display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap;
+      /* ===== HEADER ===== */
+      .header {
+        background: var(--bg2); padding: 14px 16px 10px;
+        border-bottom: 1px solid rgba(0,212,255,0.15);
+        position: sticky; top: 0; z-index: 100;
       }
-      .polar-status {
-        flex: 1; min-width: 160px; background: rgba(0,0,0,0.2); padding: 12px;
-        border-radius: 8px; border: 2px solid rgba(255,255,255,0.1);
-        display: flex; justify-content: space-between; align-items: center;
+      .header-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+      .lvl-badge {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff; font-weight: 800; font-size: 0.95em;
+        padding: 6px 14px; border-radius: 20px; letter-spacing: 1px;
       }
-      .polar-status.productif { border-color: #2ed573; }
-      .polar-status.maintien { border-color: #1e90ff; }
-      .polar-status.excessif { border-color: #ffa502; }
-      .polar-status.desentrainement { border-color: #ff6348; }
-      .polar-status.recuperation { border-color: #a29bfe; }
-      .polar-label { font-size: 0.8em; color: #aaa; }
-      .polar-value { font-size: 1.1em; font-weight: bold; }
-      .profile-info { display: flex; gap: 10px; flex-wrap: wrap; flex: 2; }
-      .info-item { background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 8px; flex: 1; min-width: 100px; }
-      .info-label { color: #aaa; font-size: 0.8em; margin-bottom: 3px; }
-      .info-value { font-weight: bold; color: #00d4ff; font-size: 1em; }
-      .xp-bar { width: 100%; height: 22px; background: rgba(0,0,0,0.5); border-radius: 12px; overflow: hidden; margin-top: 12px; position: relative; }
-      .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #00d4ff 0%, #0099cc 100%); transition: width 0.5s ease; box-shadow: 0 0 15px rgba(0,212,255,0.6); }
-      .xp-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; font-size: 0.85em; color: #fff; text-shadow: 0 0 5px rgba(0,0,0,0.8); }
+      .header-right { display: flex; align-items: center; gap: 10px; }
+      .streak-badge {
+        background: rgba(255,165,2,0.15); border: 1px solid var(--orange);
+        color: var(--orange); padding: 5px 12px; border-radius: 20px;
+        font-weight: 700; font-size: 0.9em;
+      }
+      .settings-ico {
+        background: rgba(255,255,255,0.08); border: none; color: var(--text);
+        width: 36px; height: 36px; border-radius: 10px; cursor: pointer;
+        font-size: 1.1em; transition: background 0.2s;
+      }
+      .settings-ico:hover { background: rgba(255,255,255,0.15); }
+      .xp-row { display: flex; align-items: center; gap: 10px; }
+      .xp-label { font-size: 0.78em; color: var(--muted); white-space: nowrap; }
+      .xp-bar-wrap { flex: 1; height: 8px; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; }
+      .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width 0.5s; }
 
-      /* MODAL STATS */
-      .stats-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-      .stat-item { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border-left: 4px solid; }
-      .stat-item.force { border-color: #ff4757; }
-      .stat-item.endurance { border-color: #ffa502; }
-      .stat-item.agility { border-color: #1e90ff; }
-      .stat-item.perception { border-color: #2ed573; }
-      .stat-item.intelligence { border-color: #a29bfe; }
-      .stat-label { font-size: 0.9em; color: #aaa; margin-bottom: 4px; }
-      .stat-value { font-size: 1.8em; font-weight: bold; margin-bottom: 8px; }
-      .stat-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; }
-      .stat-bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 4px; }
-      .stat-item.force .stat-bar-fill { background: #ff4757; }
-      .stat-item.endurance .stat-bar-fill { background: #ffa502; }
-      .stat-item.agility .stat-bar-fill { background: #1e90ff; }
-      .stat-item.perception .stat-bar-fill { background: #2ed573; }
-      .stat-item.intelligence .stat-bar-fill { background: #a29bfe; }
+      /* ===== PAGES ===== */
+      .page { display: none; padding: 16px; animation: fadeIn 0.25s ease; }
+      .page.active { display: block; }
+      @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
-      .advice-box {
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-        padding: 20px; border-radius: 12px; margin-bottom: 25px;
-        border-left: 5px solid #00d4ff; display: none; animation: slideIn 0.5s ease;
+      /* ===== HOME ===== */
+      .diff-badge {
+        display: flex; align-items: center; justify-content: space-between;
+        background: rgba(46,213,115,0.1); border: 1px solid var(--green);
+        border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.9em;
       }
-      @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-      .advice-box.show { display: block; }
-      .advice-box h3 { color: #00d4ff; margin-bottom: 10px; font-size: 1.2em; }
-      .advice-box p { line-height: 1.6; color: #ddd; }
-      .quests-section { margin-bottom: 25px; }
-      .section-title { font-size: 1.5em; margin-bottom: 15px; color: #00d4ff; display: flex; align-items: center; gap: 10px; }
+      .diff-badge.hard { background: rgba(255,71,87,0.1); border-color: var(--red); }
+      .diff-badge.easy { background: rgba(46,213,115,0.1); border-color: var(--green); }
+      .diff-reset { background: rgba(255,255,255,0.1); border: none; color: var(--text); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8em; }
+
+      .card { background: var(--bg2); border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.07); }
+      .card-title { font-size: 0.85em; color: var(--accent); font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+      .activity-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .act-btn {
+        background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+        color: var(--text); padding: 12px; border-radius: 10px; cursor: pointer;
+        font-size: 0.95em; font-weight: 600; transition: all 0.2s; text-align: center;
+      }
+      .act-btn:hover { border-color: var(--orange); background: rgba(255,165,2,0.1); }
+      .act-btn small { display: block; color: var(--orange); font-size: 0.8em; margin-top: 3px; }
+
+      .gen-btn {
+        width: 100%; padding: 18px; border-radius: 14px; border: none;
+        background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        color: #fff; font-size: 1.15em; font-weight: 800; cursor: pointer;
+        letter-spacing: 0.5px; transition: all 0.3s; margin-bottom: 14px;
+        box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+      }
+      .gen-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(124,58,237,0.6); }
+      .gen-btn:disabled { background: #2a3444; color: var(--muted); cursor: not-allowed; transform: none; box-shadow: none; }
+
+      .hint { text-align: center; color: var(--muted); font-size: 0.88em; padding: 10px; }
+
+      .advice-card {
+        background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(0,153,204,0.05));
+        border: 1px solid rgba(0,212,255,0.25); border-radius: 12px;
+        padding: 14px; margin-bottom: 14px; display: none;
+      }
+      .advice-card.show { display: block; }
+      .advice-card p { font-size: 0.9em; line-height: 1.6; color: #cde; }
+
       .quest-card {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2a4a6f 100%);
-        padding: 20px; border-radius: 12px; margin-bottom: 15px;
-        border: 2px solid rgba(255,255,255,0.1); transition: all 0.3s; position: relative; overflow: hidden;
+        background: var(--bg2); border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px; padding: 16px; margin-bottom: 12px; transition: all 0.2s;
       }
-      .quest-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,212,255,0.3); }
-      .quest-card.completed { opacity: 0.6; border-color: #2ed573; }
-      .quest-card.completed::after { content: '✓'; position: absolute; top: 15px; right: 15px; font-size: 2em; color: #2ed573; }
-      .quest-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-      .quest-name { font-size: 1.3em; font-weight: bold; color: #fff; }
-      .quest-xp { background: rgba(0,212,255,0.2); padding: 5px 12px; border-radius: 20px; font-weight: bold; color: #00d4ff; font-size: 0.9em; }
-      .quest-description { color: #ccc; line-height: 1.6; margin-bottom: 15px; }
+      .quest-card.done { opacity: 0.55; border-color: var(--green); }
+      .quest-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+      .quest-name { font-weight: 700; font-size: 1.05em; }
+      .quest-xp { background: rgba(0,212,255,0.15); color: var(--accent); padding: 3px 10px; border-radius: 12px; font-size: 0.82em; font-weight: 700; white-space: nowrap; margin-left: 8px; }
+      .quest-desc { color: #aab; font-size: 0.88em; line-height: 1.55; margin-bottom: 12px; }
       .quest-btn {
-        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-        border: none; color: #fff; padding: 12px 25px; border-radius: 8px;
-        cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.3s; width: 100%;
+        width: 100%; padding: 11px; border-radius: 9px; border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff; font-weight: 700; cursor: pointer; font-size: 0.95em; transition: all 0.2s;
       }
-      .quest-btn:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(0,212,255,0.5); }
-      .quest-btn:disabled { background: #555; cursor: not-allowed; transform: none; }
-      .endurance-section {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2a4a6f 100%);
-        padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid rgba(255,165,2,0.3);
+      .quest-btn:hover { opacity: 0.85; }
+      .quest-btn:disabled { background: #2a3444; color: var(--muted); cursor: not-allowed; }
+
+      .feedback-row { display: flex; gap: 8px; margin-bottom: 14px; }
+      .fb-btn {
+        flex: 1; padding: 10px 6px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.05); color: var(--text); cursor: pointer;
+        font-size: 0.82em; text-align: center; transition: all 0.2s;
       }
-      .endurance-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-      .endurance-btn {
-        background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
-        border: none; color: #fff; padding: 15px; border-radius: 8px;
-        cursor: pointer; font-size: 1.1em; font-weight: bold; transition: all 0.3s;
+      .fb-btn:hover { background: rgba(255,255,255,0.12); }
+      .fb-btn.active-hard { border-color: var(--red); background: rgba(255,71,87,0.15); color: var(--red); }
+      .fb-btn.active-ok { border-color: var(--green); background: rgba(46,213,115,0.15); color: var(--green); }
+      .fb-btn.active-easy { border-color: var(--accent); background: rgba(0,212,255,0.15); color: var(--accent); }
+
+      /* ===== NIVEAU PAGE ===== */
+      .stats-list { display: flex; flex-direction: column; gap: 12px; }
+      .stat-row {
+        background: var(--bg2); border-radius: 12px; padding: 14px 16px;
+        border-left: 4px solid; display: flex; align-items: center; gap: 14px;
       }
-      .endurance-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255,165,2,0.5); }
-      .generate-section { text-align: center; margin-bottom: 25px; }
-      #generateBtn {
-        background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
-        border: none; color: #fff; padding: 18px 40px; border-radius: 12px;
-        cursor: pointer; font-size: 1.3em; font-weight: bold; transition: all 0.3s;
-        box-shadow: 0 5px 25px rgba(255,71,87,0.4);
+      .stat-row.force { border-color: var(--red); }
+      .stat-row.endurance { border-color: var(--orange); }
+      .stat-row.agility { border-color: var(--accent); }
+      .stat-row.perception { border-color: var(--green); }
+      .stat-row.intelligence { border-color: var(--purple); }
+      .stat-icon { font-size: 1.4em; }
+      .stat-info { flex: 1; }
+      .stat-name { font-size: 0.78em; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px; }
+      .stat-val { font-size: 1.5em; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+      .stat-bar2 { height: 5px; background: rgba(0,0,0,0.4); border-radius: 3px; overflow: hidden; }
+      .stat-bar2-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+      .stat-row.force .stat-bar2-fill { background: var(--red); }
+      .stat-row.endurance .stat-bar2-fill { background: var(--orange); }
+      .stat-row.agility .stat-bar2-fill { background: var(--accent); }
+      .stat-row.perception .stat-bar2-fill { background: var(--green); }
+      .stat-row.intelligence .stat-bar2-fill { background: var(--purple); }
+      .stat-xp-label { font-size: 0.75em; color: var(--muted); text-align: right; white-space: nowrap; }
+
+      .section-title { font-size: 1.1em; font-weight: 700; color: var(--accent); margin-bottom: 14px; margin-top: 6px; }
+
+      /* ===== POLAR PAGE ===== */
+      .polar-card {
+        background: var(--bg2); border-radius: 14px; padding: 18px; margin-bottom: 14px;
+        border: 1px solid rgba(255,255,255,0.07);
       }
-      #generateBtn:hover { transform: scale(1.05); box-shadow: 0 8px 35px rgba(255,71,87,0.6); }
-      #generateBtn:disabled { background: #555; cursor: not-allowed; transform: none; }
-      #feedbackBtn {
-        background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3);
-        color: #fff; padding: 12px 30px; border-radius: 8px; cursor: pointer;
-        font-size: 1em; margin-top: 15px; display: none; transition: all 0.3s;
+      .polar-status-big {
+        font-size: 1.3em; font-weight: 800; margin-bottom: 6px;
       }
-      #feedbackBtn:hover { background: rgba(255,255,255,0.2); }
-      .modal {
-        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto; padding: 20px;
+      .polar-ratio { color: var(--muted); font-size: 0.9em; margin-bottom: 14px; }
+      .polar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .polar-item { background: rgba(0,0,0,0.25); border-radius: 10px; padding: 12px; text-align: center; }
+      .polar-item-label { font-size: 0.75em; color: var(--muted); margin-bottom: 4px; }
+      .polar-item-val { font-size: 1.6em; font-weight: 800; }
+      .polar-item-val.fatigue { color: var(--red); }
+      .polar-item-val.tolerance { color: var(--green); }
+
+      .form-group { margin-bottom: 16px; }
+      .form-label { font-size: 0.82em; color: var(--muted); margin-bottom: 6px; display: block; }
+      .form-input {
+        width: 100%; padding: 11px 14px; background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+        color: var(--text); font-size: 0.95em;
       }
-      .modal.active { display: flex; align-items: center; justify-content: center; }
-      .modal-content {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2a4a6f 100%);
-        padding: 30px; border-radius: 15px; max-width: 600px; width: 100%;
-        max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+      .form-input:focus { outline: none; border-color: var(--accent); }
+      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+      /* ===== HISTORIQUE ===== */
+      .history-empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 0.9em; }
+      .history-day { margin-bottom: 18px; }
+      .history-date { font-size: 0.8em; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .history-item {
+        background: var(--bg2); border-radius: 10px; padding: 12px 14px;
+        margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
+        border: 1px solid rgba(255,255,255,0.06);
       }
-      .modal-close {
-        position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1);
-        border: none; color: #fff; font-size: 1.5em; width: 35px; height: 35px;
-        border-radius: 50%; cursor: pointer; transition: all 0.3s;
+      .history-name { font-size: 0.9em; }
+      .history-xp { color: var(--accent); font-size: 0.82em; font-weight: 700; }
+
+      /* ===== BOTTOM NAV ===== */
+      .bottom-nav {
+        position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h);
+        background: var(--bg2); border-top: 1px solid rgba(255,255,255,0.08);
+        display: flex; z-index: 200;
       }
-      .modal-close:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
-      .modal h2 { color: #00d4ff; margin-bottom: 20px; font-size: 1.8em; }
-      .form-group { margin-bottom: 20px; }
-      .form-group label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.95em; }
-      .form-group input, .form-group select, .form-group textarea {
-        width: 100%; padding: 12px; background: rgba(0,0,0,0.3);
-        border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 1em;
+      .nav-item {
+        flex: 1; display: flex; flex-direction: column; align-items: center;
+        justify-content: center; gap: 4px; cursor: pointer; border: none;
+        background: transparent; color: var(--muted); font-size: 0.72em;
+        font-weight: 600; transition: color 0.2s; padding: 8px 0;
       }
-      .form-group input:focus, .form-group select:focus { outline: none; border-color: #00d4ff; }
-      .checkbox-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
-      .checkbox-item { display: flex; align-items: center; gap: 8px; }
-      .checkbox-item input[type="checkbox"] { width: auto; cursor: pointer; }
+      .nav-item .nav-icon { font-size: 1.5em; }
+      .nav-item.active { color: var(--accent); }
+      .nav-item.active .nav-icon { filter: drop-shadow(0 0 6px rgba(0,212,255,0.6)); }
+
+      /* ===== MODAL ===== */
+      .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; padding: 20px; align-items: flex-end; }
+      .modal.active { display: flex; }
+      .modal-sheet {
+        background: var(--bg3); border-radius: 20px 20px 0 0; width: 100%;
+        max-height: 90vh; overflow-y: auto; padding: 24px 20px 30px;
+        animation: slideUp 0.3s ease;
+      }
+      @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+      .modal-handle { width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 0 auto 20px; }
+      .modal-title { font-size: 1.2em; font-weight: 700; margin-bottom: 20px; color: var(--accent); }
+
       .btn-primary {
-        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-        border: none; color: #fff; padding: 12px 30px; border-radius: 8px;
-        cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.3s; width: 100%; margin-top: 10px;
+        width: 100%; padding: 13px; border-radius: 11px; border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff; font-weight: 700; font-size: 1em; cursor: pointer; margin-top: 8px; transition: opacity 0.2s;
       }
-      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,212,255,0.5); }
+      .btn-primary:hover { opacity: 0.85; }
       .btn-danger {
-        background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
-        border: none; color: #fff; padding: 12px 30px; border-radius: 8px;
-        cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.3s; width: 100%; margin-top: 10px;
+        width: 100%; padding: 13px; border-radius: 11px; border: none;
+        background: rgba(255,71,87,0.15); border: 1px solid var(--red);
+        color: var(--red); font-weight: 700; font-size: 1em; cursor: pointer; margin-top: 10px;
       }
-      .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255,71,87,0.5); }
+
+      .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+      .check-item {
+        background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 9px; padding: 10px 12px; display: flex; align-items: center; gap: 8px;
+        cursor: pointer; font-size: 0.88em; transition: all 0.2s;
+      }
+      .check-item input { cursor: pointer; accent-color: var(--accent); }
+      .check-item:has(input:checked) { border-color: var(--accent); background: rgba(0,212,255,0.08); }
+
+      /* DEBUG */
+      .debug-panel { background: #0d1520; border: 1px dashed #2a3a4a; border-radius: 12px; padding: 16px; margin-top: 20px; }
+      .debug-title { font-size: 0.75em; color: #3a5a6a; font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; }
+      .debug-row { display: flex; gap: 8px; margin-bottom: 10px; }
+      .debug-input {
+        flex: 1; padding: 9px; background: rgba(0,0,0,0.4); border: 1px solid #2a3a4a;
+        border-radius: 8px; color: var(--text); font-size: 0.9em; text-align: center;
+      }
+      .debug-btn {
+        padding: 9px 16px; background: #1e3a5f; border: none; color: #7ab; border-radius: 8px;
+        cursor: pointer; font-size: 0.85em; font-weight: 600;
+      }
+      .debug-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+      .debug-preset {
+        padding: 7px 12px; background: #1a2535; border: 1px solid #2a3a4a; color: #5a7a8a;
+        border-radius: 7px; cursor: pointer; font-size: 0.8em;
+      }
+
+      /* LOADING */
       #loadingOverlay {
-        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; flex-direction: column;
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+        z-index: 999; flex-direction: column; align-items: center; justify-content: center;
       }
       #loadingOverlay.active { display: flex; }
-      .spinner {
-        width: 60px; height: 60px; border: 5px solid rgba(0,212,255,0.2);
-        border-top-color: #00d4ff; border-radius: 50%; animation: spin 1s linear infinite;
-      }
+      .spinner { width: 48px; height: 48px; border: 4px solid rgba(0,212,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; }
       @keyframes spin { to { transform: rotate(360deg); } }
-      #loadingText { color: #00d4ff; font-size: 1.2em; margin-top: 20px; }
+      .loading-txt { color: var(--accent); margin-top: 16px; font-size: 1em; }
+
+      /* TOAST */
       .toast {
-        position: fixed; bottom: 30px; right: 30px;
-        background: linear-gradient(135deg, #2ed573 0%, #26d07c 100%);
-        color: #fff; padding: 15px 25px; border-radius: 8px;
-        box-shadow: 0 5px 25px rgba(0,0,0,0.3); z-index: 3000;
-        opacity: 0; transform: translateY(50px); transition: all 0.3s;
+        position: fixed; bottom: calc(var(--nav-h) + 12px); left: 50%; transform: translateX(-50%) translateY(20px);
+        background: #1e3a2e; border: 1px solid var(--green); color: var(--green);
+        padding: 11px 22px; border-radius: 30px; font-size: 0.9em; font-weight: 600;
+        z-index: 999; opacity: 0; transition: all 0.3s; white-space: nowrap;
       }
-      .toast.show { opacity: 1; transform: translateY(0); }
-      .toast.error { background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%); }
-      @media (max-width: 768px) {
-        h1 { font-size: 1.5em; }
-        .header-buttons { flex-wrap: wrap; }
-        .header-compact { flex-direction: column; }
-      }
+      .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+      .toast.error { background: #3a1e1e; border-color: var(--red); color: var(--red); }
     </style>
   </head>
   <body>
-  <div class="container">
 
-    <header>
-      <div class="header-content">
-        <div class="header-top">
-          <h1>⚔️ Hunter System</h1>
-          <div class="header-buttons">
-            <button class="stats-btn" onclick="openStats()">📈 Stats</button>
-            <button class="niveau-btn" onclick="openNiveau()">📊 Niveau</button>
-            <button class="settings-btn" onclick="openSettings()">⚙️</button>
-          </div>
-        </div>
-
-        <!-- HEADER COMPACT : Polar + infos clés -->
-        <div class="header-compact">
-          <div class="polar-status" id="polarStatus">
-            <div>
-              <div class="polar-label">📊 Polar</div>
-              <div class="polar-value" id="polarStatusText">Non configuré</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="polar-label">Fat / Tol</div>
-              <div class="polar-value" id="polarRatio">-- / --</div>
-            </div>
-          </div>
-          <div class="profile-info">
-            <div class="info-item">
-              <div class="info-label">Niveau</div>
-              <div class="info-value" id="levelDisplay">1</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">Série</div>
-              <div class="info-value"><span id="streakDisplay">0</span> j 🔥</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">Quêtes</div>
-              <div class="info-value"><span id="totalQuestsDisplay">0</span>/<span id="totalPossibleDisplay">0</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="xp-bar">
-          <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
-          <div class="xp-text" id="xpText">0 / 500 XP</div>
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-row1">
+        <div class="lvl-badge" id="lvlBadge">LVL 1</div>
+        <div class="header-right">
+          <div class="streak-badge" id="streakBadge">🔥 0</div>
+          <button class="settings-ico" onclick="openSettings()">⚙️</button>
         </div>
       </div>
-    </header>
-
-    <div class="advice-box" id="adviceBox">
-      <h3>💬 Message du Système</h3>
-      <p id="adviceText"></p>
-    </div>
-
-    <div class="generate-section">
-      <button id="generateBtn" onclick="generateProgram()">⚡ Générer Programme Quotidien</button>
-      <button id="feedbackBtn" onclick="openFeedback()">📝 Ajuster la Difficulté</button>
-    </div>
-
-    <div class="endurance-section" id="enduranceSection" style="display:none;">
-      <div class="section-title">🏃 Activités Endurance Libres</div>
-      <p style="color:#aaa; margin-bottom:15px;">Ces activités donnent de l'XP en Endurance et Agilité.</p>
-      <div class="endurance-buttons">
-        <button class="endurance-btn" onclick="completeEndurance('course')">🏃 Course à Pied<br><small>+120 XP</small></button>
-        <button class="endurance-btn" onclick="completeEndurance('badminton')">🏸 Badminton<br><small>+100 XP</small></button>
+      <div class="xp-row">
+        <span class="xp-label" id="xpLabel">XP 0/500</span>
+        <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpFill" style="width:0%"></div></div>
       </div>
     </div>
 
-    <div class="quests-section" id="questsSection" style="display:none;">
-      <div class="section-title">📜 Quêtes du Jour</div>
-      <div id="questsContainer"></div>
+    <!-- PAGE : HOME -->
+    <div class="page active" id="pageHome">
+
+      <div id="diffBadge" style="display:none;" class="diff-badge">
+        <span id="diffText"></span>
+        <button class="diff-reset" onclick="resetDiff()">Réinitialiser</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏃 Activité du jour</div>
+        <p style="color:var(--muted); font-size:0.82em; margin-bottom:12px;">Tu as couru ou joué au badminton ? Valide ici — les quêtes de renforcement sont pour tes jours off.</p>
+        <div class="activity-btns">
+          <button class="act-btn" onclick="completeEndurance('course')">🏃 Course<small>+120 XP</small></button>
+          <button class="act-btn" onclick="completeEndurance('badminton')">🏸 Badminton<small>+100 XP</small></button>
+        </div>
+      </div>
+
+      <button class="gen-btn" id="genBtn" onclick="generateProgram()">⚡ GÉNÉRER PROGRAMME QUOTIDIEN</button>
+
+      <div class="advice-card" id="adviceCard">
+        <p id="adviceText"></p>
+      </div>
+
+      <div id="questsWrap"></div>
+
+      <div id="hintWrap" class="hint">Lance la génération pour recevoir tes quêtes du jour ✦</div>
+
+      <div id="feedbackWrap" style="display:none;">
+        <div style="font-size:0.8em; color:var(--muted); margin-bottom:8px; text-align:center;">Comment était le programme ?</div>
+        <div class="feedback-row">
+          <button class="fb-btn" id="fbHard" onclick="setDiff(-1)">😰 Difficile</button>
+          <button class="fb-btn" id="fbOk"   onclick="setDiff(0)">👌 Parfait</button>
+          <button class="fb-btn" id="fbEasy" onclick="setDiff(1)">😎 Facile</button>
+        </div>
+      </div>
+
     </div>
 
-    <!-- MODAL STATS -->
-    <div class="modal" id="statsModal">
-      <div class="modal-content" style="max-width:420px;">
-        <button class="modal-close" onclick="closeStats()">×</button>
-        <h2>📈 Statistiques</h2>
-        <p style="color:#aaa; margin-bottom:20px; font-size:0.9em;">Progression détaillée de chaque attribut.</p>
-        <div class="stats-grid">
-          <div class="stat-item force">
-            <div class="stat-label">💪 FORCE</div>
-            <div class="stat-value" id="statForce">1</div>
-            <div class="stat-bar"><div class="stat-bar-fill" id="barForce" style="width:0%"></div></div>
+    <!-- PAGE : NIVEAU -->
+    <div class="page" id="pageNiveau">
+      <div class="section-title">📊 Progression des Stats</div>
+      <div class="stats-list">
+        <div class="stat-row force">
+          <div class="stat-icon">💪</div>
+          <div class="stat-info">
+            <div class="stat-name">FORCE</div>
+            <div class="stat-val" id="sForce">1</div>
+            <div class="stat-bar2"><div class="stat-bar2-fill" id="bForce" style="width:0%"></div></div>
           </div>
-          <div class="stat-item endurance">
-            <div class="stat-label">🏃 ENDURANCE</div>
-            <div class="stat-value" id="statEndurance">1</div>
-            <div class="stat-bar"><div class="stat-bar-fill" id="barEndurance" style="width:0%"></div></div>
-          </div>
-          <div class="stat-item agility">
-            <div class="stat-label">⚡ AGILITÉ</div>
-            <div class="stat-value" id="statAgility">1</div>
-            <div class="stat-bar"><div class="stat-bar-fill" id="barAgility" style="width:0%"></div></div>
-          </div>
-          <div class="stat-item perception">
-            <div class="stat-label">👁️ PERCEPTION</div>
-            <div class="stat-value" id="statPerception">1</div>
-            <div class="stat-bar"><div class="stat-bar-fill" id="barPerception" style="width:0%"></div></div>
-          </div>
-          <div class="stat-item intelligence">
-            <div class="stat-label">🧠 INTELLIGENCE</div>
-            <div class="stat-value" id="statIntelligence">1</div>
-            <div class="stat-bar"><div class="stat-bar-fill" id="barIntelligence" style="width:0%"></div></div>
-          </div>
+          <div class="stat-xp-label" id="xForce">0/500</div>
         </div>
-        <button class="btn-primary" style="margin-top:20px;" onclick="closeStats()">✓ Fermer</button>
+        <div class="stat-row endurance">
+          <div class="stat-icon">🏃</div>
+          <div class="stat-info">
+            <div class="stat-name">ENDURANCE</div>
+            <div class="stat-val" id="sEndurance">1</div>
+            <div class="stat-bar2"><div class="stat-bar2-fill" id="bEndurance" style="width:0%"></div></div>
+          </div>
+          <div class="stat-xp-label" id="xEndurance">0/500</div>
+        </div>
+        <div class="stat-row agility">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-info">
+            <div class="stat-name">AGILITÉ</div>
+            <div class="stat-val" id="sAgility">1</div>
+            <div class="stat-bar2"><div class="stat-bar2-fill" id="bAgility" style="width:0%"></div></div>
+          </div>
+          <div class="stat-xp-label" id="xAgility">0/500</div>
+        </div>
+        <div class="stat-row perception">
+          <div class="stat-icon">👁️</div>
+          <div class="stat-info">
+            <div class="stat-name">PERCEPTION</div>
+            <div class="stat-val" id="sPerception">1</div>
+            <div class="stat-bar2"><div class="stat-bar2-fill" id="bPerception" style="width:0%"></div></div>
+          </div>
+          <div class="stat-xp-label" id="xPerception">0/500</div>
+        </div>
+        <div class="stat-row intelligence">
+          <div class="stat-icon">🧠</div>
+          <div class="stat-info">
+            <div class="stat-name">INTELLIGENCE</div>
+            <div class="stat-val" id="sIntelligence">1</div>
+            <div class="stat-bar2"><div class="stat-bar2-fill" id="bIntelligence" style="width:0%"></div></div>
+          </div>
+          <div class="stat-xp-label" id="xIntelligence">0/500</div>
+        </div>
+      </div>
+
+      <!-- DEBUG caché -->
+      <div style="text-align:center; margin-top:28px;">
+        <button onclick="toggleDebug()" style="background:none; border:none; color:#2a3a4a; font-size:0.75em; cursor:pointer; letter-spacing:1px;">⚙ MODE TEST</button>
+      </div>
+      <div class="debug-panel" id="debugPanel" style="display:none;">
+        <div class="debug-title">🎮 SIMULER UN NIVEAU — TEST UNIQUEMENT</div>
+        <div class="debug-row">
+          <input type="number" class="debug-input" id="debugInput" placeholder="Niveau (1-100)" min="1" max="100">
+          <button class="debug-btn" onclick="applyDebug()">Appliquer</button>
+        </div>
+        <div class="debug-presets">
+          <button class="debug-preset" onclick="applyDebugVal(3)">Niv. 3</button>
+          <button class="debug-preset" onclick="applyDebugVal(8)">Niv. 8</button>
+          <button class="debug-preset" onclick="applyDebugVal(15)">Niv. 15</button>
+          <button class="debug-preset" onclick="applyDebugVal(25)">Niv. 25</button>
+          <button class="debug-preset" onclick="resetAll()" style="color:#ff6b6b; border-color:#3a2020;">Reset tout</button>
+        </div>
+        <p style="color:#2a4a5a; font-size:0.75em; margin-top:10px;">Les niveaux simulés adaptent les exercices générés. Ta vraie progression reste basée sur l'XP gagné.</p>
       </div>
     </div>
 
-    <!-- MODAL NIVEAU -->
-    <div class="modal" id="niveauModal">
-      <div class="modal-content" style="max-width:420px;">
-        <button class="modal-close" onclick="closeNiveau()">×</button>
-        <h2>📊 Niveau des Stats</h2>
-        <p style="color:#aaa; margin-bottom:20px; font-size:0.9em;">Modifie le niveau de chaque stat ou applique un niveau global.</p>
-        <div class="form-group"><label>💪 FORCE</label><input type="number" id="niveauForce" min="1" max="100" placeholder="1"></div>
-        <div class="form-group"><label>🏃 ENDURANCE</label><input type="number" id="niveauEndurance" min="1" max="100" placeholder="1"></div>
-        <div class="form-group"><label>⚡ AGILITÉ</label><input type="number" id="niveauAgility" min="1" max="100" placeholder="1"></div>
-        <div class="form-group"><label>👁️ PERCEPTION</label><input type="number" id="niveauPerception" min="1" max="100" placeholder="1"></div>
-        <div class="form-group"><label>🧠 INTELLIGENCE</label><input type="number" id="niveauIntelligence" min="1" max="100" placeholder="1"></div>
-        <hr style="border-color:rgba(255,255,255,0.1); margin:20px 0;">
+    <!-- PAGE : POLAR -->
+    <div class="page" id="pagePolar">
+      <div class="section-title">📡 Données Polar Flow</div>
+
+      <div class="polar-card" id="polarCard">
+        <div class="polar-status-big" id="polarBig">Non configuré</div>
+        <div class="polar-ratio" id="polarRatioTxt">Configure tes données ci-dessous</div>
+        <div class="polar-grid">
+          <div class="polar-item">
+            <div class="polar-item-label">Fatigue (7j)</div>
+            <div class="polar-item-val fatigue" id="polarFatVal">--</div>
+          </div>
+          <div class="polar-item">
+            <div class="polar-item-label">Tolérance (28j)</div>
+            <div class="polar-item-val tolerance" id="polarTolVal">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">✏️ Mettre à jour</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fatigue (7j)</label>
+            <input type="number" class="form-input" id="inFatigue" placeholder="ex: 29" min="0" max="100">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tolérance (28j)</label>
+            <input type="number" class="form-input" id="inTolerance" placeholder="ex: 23" min="0" max="100">
+          </div>
+        </div>
         <div class="form-group">
-          <label>🎯 Niveau global</label>
-          <div style="display:flex; gap:10px; margin-top:8px;">
-            <input type="number" id="niveauGlobal" min="1" max="100" placeholder="Ex: 10"
-              style="padding:12px; background:rgba(0,0,0,0.3); border:2px solid rgba(255,255,255,0.2); border-radius:8px; color:#fff; font-size:1em; flex:1;">
-            <button onclick="applyNiveauGlobal()"
-              style="background:#6366f1; border:none; color:white; padding:12px 18px; border-radius:8px; cursor:pointer; font-weight:bold;">
-              Appliquer
-            </button>
-          </div>
+          <label class="form-label">Statut</label>
+          <select class="form-input" id="inPolarStatus">
+            <option value="">Non configuré</option>
+            <option value="productif">🟢 Productif</option>
+            <option value="maintien">🔵 Maintien</option>
+            <option value="excessif">🟠 Excessif</option>
+            <option value="desentrainement">🔴 Désentraînement</option>
+            <option value="recuperation">🟣 Récupération</option>
+          </select>
         </div>
-        <button class="btn-primary" onclick="saveNiveau()">💾 Enregistrer</button>
+        <button class="btn-primary" onclick="savePolar()">💾 Enregistrer</button>
       </div>
     </div>
+
+    <!-- PAGE : HISTORIQUE -->
+    <div class="page" id="pageHistorique">
+      <div class="section-title">📜 Historique des Activités</div>
+      <div id="historyContent"><div class="history-empty">Aucune activité enregistrée.<br>Complète tes premières quêtes !</div></div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="navHome" onclick="goPage('Home')">
+        <span class="nav-icon">🏠</span>Accueil
+      </button>
+      <button class="nav-item" id="navNiveau" onclick="goPage('Niveau')">
+        <span class="nav-icon">📊</span>Niveau
+      </button>
+      <button class="nav-item" id="navPolar" onclick="goPage('Polar')">
+        <span class="nav-icon">📡</span>Polar
+      </button>
+      <button class="nav-item" id="navHistorique" onclick="goPage('Historique')">
+        <span class="nav-icon">📜</span>Historique
+      </button>
+    </nav>
 
     <!-- MODAL SETTINGS -->
     <div class="modal" id="settingsModal">
-      <div class="modal-content">
-        <button class="modal-close" onclick="closeSettings()">×</button>
-        <h2>⚙️ Paramètres</h2>
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-title">⚙️ Paramètres</div>
         <div class="form-group">
-          <label>🔑 Clé API OpenRouter</label>
-          <input type="password" id="apiKeyInput" placeholder="sk-or-v1-...">
-          <small style="color:#aaa; display:block; margin-top:5px;">
-            Obtiens ta clé sur <a href="https://openrouter.ai/keys" target="_blank" style="color:#00d4ff;">openrouter.ai/keys</a>
+          <label class="form-label">🔑 Clé API OpenRouter</label>
+          <input type="password" class="form-input" id="apiKeyInput" placeholder="sk-or-v1-...">
+          <small style="color:var(--muted); display:block; margin-top:5px; font-size:0.78em;">
+            Obtiens ta clé sur <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--accent);">openrouter.ai/keys</a>
           </small>
         </div>
         <div class="form-group">
-          <label>🩹 Blessure Actuelle (optionnel)</label>
-          <input type="text" id="injuryInput" placeholder="Ex: Épaule droite">
+          <label class="form-label">🩹 Blessure actuelle (optionnel)</label>
+          <input type="text" class="form-input" id="injuryInput" placeholder="Ex: Épaule droite">
         </div>
         <div class="form-group">
-          <label>🏋️ Équipement Disponible</label>
-          <div class="checkbox-group">
-            <div class="checkbox-item"><input type="checkbox" id="equipNone" value="none" checked><label for="equipNone">Aucun (poids du corps)</label></div>
-            <div class="checkbox-item"><input type="checkbox" id="equipPullup" value="pullup"><label for="equipPullup">Barre de traction</label></div>
-            <div class="checkbox-item"><input type="checkbox" id="equipRings" value="rings"><label for="equipRings">Anneaux</label></div>
-            <div class="checkbox-item"><input type="checkbox" id="equipDumbbells" value="dumbbells"><label for="equipDumbbells">Haltères</label></div>
-            <div class="checkbox-item"><input type="checkbox" id="equipBands" value="bands"><label for="equipBands">Bandes élastiques</label></div>
-            <div class="checkbox-item"><input type="checkbox" id="equipChair" value="chair"><label for="equipChair">Chaise / Table</label></div>
-          </div>
+          <label class="form-label">🎯 Niveau de départ (si tu arrives avec une base sportive)</label>
+          <input type="number" class="form-input" id="startLevelInput" placeholder="1 = débutant, 5 = sportif régulier" min="1" max="20">
+          <small style="color:var(--muted); display:block; margin-top:5px; font-size:0.78em;">Appliqué uniquement au 1er démarrage. La progression se fait ensuite via l'XP.</small>
         </div>
         <div class="form-group">
-          <label>📊 Données Polar Flow</label>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-            <div><label style="font-size:0.85em;">Fatigue (7j)</label><input type="number" id="polarFatigue" placeholder="29" min="0" max="100"></div>
-            <div><label style="font-size:0.85em;">Tolérance (28j)</label><input type="number" id="polarTolerance" placeholder="23" min="0" max="100"></div>
+          <label class="form-label">🏋️ Équipement disponible</label>
+          <div class="checkbox-grid">
+            <label class="check-item"><input type="checkbox" id="eqNone" value="none"> Poids du corps</label>
+            <label class="check-item"><input type="checkbox" id="eqPullup" value="pullup"> Barre traction</label>
+            <label class="check-item"><input type="checkbox" id="eqRings" value="rings"> Anneaux</label>
+            <label class="check-item"><input type="checkbox" id="eqDumbbells" value="dumbbells"> Haltères</label>
+            <label class="check-item"><input type="checkbox" id="eqBands" value="bands"> Élastiques</label>
+            <label class="check-item"><input type="checkbox" id="eqChair" value="chair"> Chaise/Table</label>
           </div>
-          <label style="font-size:0.85em;">Statut</label>
-          <select id="polarStatusInput">
-            <option value="">Non configuré</option>
-            <option value="productif">Productif</option>
-            <option value="maintien">Maintien</option>
-            <option value="excessif">Excessif</option>
-            <option value="desentrainement">Désentraînement</option>
-            <option value="recuperation">Récupération</option>
-          </select>
         </div>
         <button class="btn-primary" onclick="saveSettings()">💾 Enregistrer</button>
-        <button class="btn-danger" onclick="resetProgress()">🔄 Réinitialiser Progression</button>
-      </div>
-    </div>
-
-    <!-- MODAL FEEDBACK -->
-    <div class="modal" id="feedbackModal">
-      <div class="modal-content">
-        <button class="modal-close" onclick="closeFeedback()">×</button>
-        <h2>📝 Ajuster la Difficulté</h2>
-        <p style="color:#aaa; margin-bottom:20px;">Comment as-tu trouvé le programme d'aujourd'hui ?</p>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <button class="btn-primary" onclick="adjustDifficulty(-1)">😰 Trop Difficile</button>
-          <button class="btn-primary" onclick="adjustDifficulty(0)" style="background:linear-gradient(135deg,#2ed573,#26d07c);">👌 Parfait</button>
-          <button class="btn-primary" onclick="adjustDifficulty(1)">😎 Trop Facile</button>
-        </div>
+        <button class="btn-danger" onclick="resetAll()">🔄 Réinitialiser toute la progression</button>
+        <button onclick="closeSettings()" style="width:100%; padding:12px; background:none; border:none; color:var(--muted); cursor:pointer; margin-top:10px;">Annuler</button>
       </div>
     </div>
 
     <div id="loadingOverlay">
       <div class="spinner"></div>
-      <div id="loadingText">Génération en cours...</div>
+      <div class="loading-txt">Génération des quêtes...</div>
     </div>
     <div class="toast" id="toast"></div>
 
-  </div>
-
   <script>
-    let state = {
-      apiKey: '', stats: { force:1, endurance:1, agility:1, perception:1, intelligence:1 },
-      statsXP: { force:0, endurance:0, agility:0, perception:0, intelligence:0 },
-      xpPerLevel: 500, totalXP: 0, streak: 0, lastStreakDate: null,
-      injury: '', equipment: ['none'], polarFatigue: null, polarTolerance: null, polarStatus: '',
-      todayQuests: [], questsCompleted: [], lastGeneratedDate: null,
-      totalQuestsCompleted: 0, difficultyOffset: 0, exerciseHistory: []
+    // ===== STATE =====
+    let S = {
+      apiKey:'', injury:'', equipment:['none'],
+      stats:{ force:1, endurance:1, agility:1, perception:1, intelligence:1 },
+      statsXP:{ force:0, endurance:0, agility:0, perception:0, intelligence:0 },
+      xpPerLevel:500,
+      streak:0, lastStreakDate:null,
+      polarFatigue:null, polarTolerance:null, polarStatus:'',
+      todayQuests:[], questsDone:[], lastGenDate:null,
+      totalDone:0, diffOffset:0, exerciseHistory:[],
+      activityLog:[]
     };
-    function getTodayStr() { return new Date().toISOString().split('T')[0]; }
-    function saveState() { localStorage.setItem('hunterSystemState', JSON.stringify(state)); }
-    function loadState() { const s = localStorage.getItem('hunterSystemState'); if (s) state = {...state, ...JSON.parse(s)}; }
-    function showToast(msg, type='success') {
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.className = 'toast show' + (type==='error' ? ' error' : '');
-      setTimeout(() => t.classList.remove('show'), 3000);
+    const XPL = 500;
+    function today(){ return new Date().toISOString().split('T')[0]; }
+    function save(){ localStorage.setItem('hs3',JSON.stringify(S)); }
+    function load(){ const d=localStorage.getItem('hs3'); if(d) S={...S,...JSON.parse(d)}; }
+    function toast(msg,type='ok'){
+      const t=document.getElementById('toast');
+      t.textContent=msg; t.className='toast show'+(type==='err'?' error':'');
+      setTimeout(()=>t.classList.remove('show'),3000);
     }
-    function getAverageLevel() {
-      const s = state.stats;
-      return Math.floor((s.force + s.endurance + s.agility + s.perception + s.intelligence) / 5);
+
+    // ===== NAVIGATION =====
+    function goPage(name){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      document.getElementById('page'+name).classList.add('active');
+      document.getElementById('nav'+name).classList.add('active');
+      if(name==='Historique') renderHistory();
     }
-    function addStatXP(stat, xp) {
-      state.statsXP[stat] += xp;
-      while (state.statsXP[stat] >= state.xpPerLevel) {
-        state.statsXP[stat] -= state.xpPerLevel;
-        state.stats[stat]++;
-        showToast('⬆️ ' + stat.toUpperCase() + ' niveau ' + state.stats[stat] + ' !');
+
+    // ===== XP & STATS =====
+    function avgLevel(){
+      const s=S.stats;
+      return Math.floor((s.force+s.endurance+s.agility+s.perception+s.intelligence)/5);
+    }
+    function addStatXP(stat,xp){
+      S.statsXP[stat]+=xp;
+      while(S.statsXP[stat]>=XPL){
+        S.statsXP[stat]-=XPL; S.stats[stat]++;
+        toast('⬆️ '+stat.toUpperCase()+' niveau '+S.stats[stat]+' !');
       }
     }
-    function addTotalXP(xp) { state.totalXP += xp; }
 
-    function updateUI() {
-      ['force','endurance','agility','perception','intelligence'].forEach(s => {
-        const cap = s.charAt(0).toUpperCase() + s.slice(1);
-        document.getElementById('stat'+cap).textContent = state.stats[s];
-        document.getElementById('bar'+cap).style.width = (state.statsXP[s]/state.xpPerLevel*100)+'%';
+    // ===== UI UPDATE =====
+    function updateUI(){
+      const lvl=avgLevel();
+      document.getElementById('lvlBadge').textContent='LVL '+lvl;
+      document.getElementById('streakBadge').textContent='🔥 '+S.streak;
+      const avgXP=Object.values(S.statsXP).reduce((a,b)=>a+b,0)/5;
+      document.getElementById('xpFill').style.width=(avgXP/XPL*100)+'%';
+      document.getElementById('xpLabel').textContent='XP '+Math.floor(avgXP)+'/'+XPL;
+      // stats page
+      ['force','endurance','agility','perception','intelligence'].forEach(s=>{
+        const cap=s[0].toUpperCase()+s.slice(1);
+        document.getElementById('s'+cap).textContent=S.stats[s];
+        document.getElementById('b'+cap).style.width=(S.statsXP[s]/XPL*100)+'%';
+        document.getElementById('x'+cap).textContent=S.statsXP[s]+'/'+XPL;
       });
-      document.getElementById('levelDisplay').textContent = getAverageLevel();
-      document.getElementById('streakDisplay').textContent = state.streak;
-      document.getElementById('totalQuestsDisplay').textContent = state.totalQuestsCompleted;
-      document.getElementById('totalPossibleDisplay').textContent = state.todayQuests.length || 4;
-      const avgXP = Object.values(state.statsXP).reduce((a,b)=>a+b,0)/5;
-      document.getElementById('xpBarFill').style.width = (avgXP/state.xpPerLevel*100)+'%';
-      document.getElementById('xpText').textContent = Math.floor(avgXP)+' / '+state.xpPerLevel+' XP';
+      // polar page
       updatePolarUI();
-      const today = getTodayStr();
-      const btn = document.getElementById('generateBtn');
-      if (state.lastGeneratedDate === today) {
-        btn.textContent = '✅ Programme généré aujourd\'hui'; btn.disabled = true;
-        document.getElementById('feedbackBtn').style.display = 'block';
-        document.getElementById('enduranceSection').style.display = 'block';
+      // diff badge
+      updateDiffBadge();
+      // gen btn
+      const btn=document.getElementById('genBtn');
+      if(S.lastGenDate===today()){
+        btn.textContent='✅ Programme généré aujourd\'hui'; btn.disabled=true;
+        document.getElementById('feedbackWrap').style.display='block';
       } else {
-        btn.textContent = '⚡ Générer Programme Quotidien'; btn.disabled = false;
-        document.getElementById('feedbackBtn').style.display = 'none';
-        document.getElementById('enduranceSection').style.display = 'none';
+        btn.textContent='⚡ GÉNÉRER PROGRAMME QUOTIDIEN'; btn.disabled=false;
+        document.getElementById('feedbackWrap').style.display='none';
       }
     }
-    function updatePolarUI() {
-      const div = document.getElementById('polarStatus');
-      const labels = { productif:'🟢 Productif', maintien:'🔵 Maintien', excessif:'🟠 Excessif', desentrainement:'🔴 Désentraîn.', recuperation:'🟣 Récup.' };
-      if (state.polarStatus) {
-        div.className = 'polar-status '+state.polarStatus;
-        document.getElementById('polarStatusText').textContent = labels[state.polarStatus] || 'Non configuré';
-        document.getElementById('polarRatio').textContent = (state.polarFatigue||'--')+' / '+(state.polarTolerance||'--');
-      } else {
-        div.className = 'polar-status';
-        document.getElementById('polarStatusText').textContent = 'Non configuré';
-        document.getElementById('polarRatio').textContent = '-- / --';
-      }
+    function updatePolarUI(){
+      const labels={productif:'🟢 Productif',maintien:'🔵 Maintien',excessif:'🟠 Excessif',desentrainement:'🔴 Désentraînement',recuperation:'🟣 Récupération'};
+      document.getElementById('polarBig').textContent=S.polarStatus?(labels[S.polarStatus]||S.polarStatus):'Non configuré';
+      document.getElementById('polarRatioTxt').textContent=S.polarFatigue!=null?'Fatigue '+S.polarFatigue+' / Tolérance '+S.polarTolerance:'Configure tes données ci-dessous';
+      document.getElementById('polarFatVal').textContent=S.polarFatigue!=null?S.polarFatigue:'--';
+      document.getElementById('polarTolVal').textContent=S.polarTolerance!=null?S.polarTolerance:'--';
+      document.getElementById('inFatigue').value=S.polarFatigue||'';
+      document.getElementById('inTolerance').value=S.polarTolerance||'';
+      document.getElementById('inPolarStatus').value=S.polarStatus||'';
     }
-    function showAdvice(text) {
-      document.getElementById('adviceText').textContent = text;
-      document.getElementById('adviceBox').classList.add('show');
-    }
-    function renderQuests() {
-      const container = document.getElementById('questsContainer');
-      const section = document.getElementById('questsSection');
-      if (!state.todayQuests.length) { section.style.display='none'; return; }
-      section.style.display='block'; container.innerHTML='';
-      state.todayQuests.forEach((quest, i) => {
-        const card = document.createElement('div');
-        card.className = 'quest-card'+(state.questsCompleted[i]?' completed':'');
-        card.innerHTML =
-          '<div class="quest-header"><div class="quest-name">'+quest.name+'</div><div class="quest-xp">+'+quest.xp+' XP</div></div>'+
-          '<div class="quest-description">'+quest.description+'</div>'+
-          '<button class="quest-btn" onclick="completeQuest('+i+')" '+(state.questsCompleted[i]?'disabled':'')+'>'+
-          (state.questsCompleted[i]?'✓ Terminée':'✓ Marquer comme terminée')+'</button>';
-        container.appendChild(card);
-      });
-    }
-    function completeQuest(index) {
-      if (state.questsCompleted[index]) return;
-      const quest = state.todayQuests[index];
-      state.questsCompleted[index] = true; state.totalQuestsCompleted++;
-      addTotalXP(quest.xp);
-      if (quest.category==='muscle') { addStatXP('force',Math.floor(quest.xp*0.5)); addStatXP('perception',Math.floor(quest.xp*0.3)); addStatXP('agility',Math.floor(quest.xp*0.2)); }
-      else if (quest.category==='recovery') { addStatXP('intelligence',quest.xp); }
-      const today = getTodayStr();
-      if (state.questsCompleted.every(c=>c)) {
-        if (state.lastStreakDate) {
-          const y = new Date(); y.setDate(y.getDate()-1);
-          const yStr = y.toISOString().split('T')[0];
-          if (state.lastStreakDate===yStr||state.lastStreakDate===today) { if(state.lastStreakDate!==today){state.streak++;state.lastStreakDate=today;} }
-          else { state.streak=1; state.lastStreakDate=today; }
-        } else { state.streak=1; state.lastStreakDate=today; }
-      }
-      saveState(); updateUI(); renderQuests();
-      showToast('✅ +'+quest.xp+' XP ! Quête terminée !');
-    }
-    function completeEndurance(type) {
-      const xpV = {course:120,badminton:100};
-      const xp = xpV[type];
-      addTotalXP(xp); addStatXP('endurance',Math.floor(xp*0.6)); addStatXP('agility',Math.floor(xp*0.4));
-      saveState(); updateUI();
-      showToast('✅ +'+xp+' XP ! '+(type==='course'?'Course':'Badminton')+' validé !');
+    function updateDiffBadge(){
+      const b=document.getElementById('diffBadge');
+      const t=document.getElementById('diffText');
+      if(S.diffOffset===0){ b.style.display='none'; return; }
+      b.style.display='flex';
+      if(S.diffOffset>0){ b.className='diff-badge easy'; t.textContent='😎 Volume augmenté (difficulté +'+S.diffOffset+')'; }
+      else { b.className='diff-badge hard'; t.textContent='😰 Volume réduit (difficulté '+S.diffOffset+')'; }
     }
 
-    // MODALS
-    function openStats() { document.getElementById('statsModal').classList.add('active'); }
-    function closeStats() { document.getElementById('statsModal').classList.remove('active'); }
-    function openSettings() {
-      document.getElementById('apiKeyInput').value = state.apiKey;
-      document.getElementById('injuryInput').value = state.injury;
-      document.querySelectorAll('[id^="equip"]').forEach(cb => cb.checked = state.equipment.includes(cb.value));
-      document.getElementById('polarFatigue').value = state.polarFatigue||'';
-      document.getElementById('polarTolerance').value = state.polarTolerance||'';
-      document.getElementById('polarStatusInput').value = state.polarStatus||'';
+    // ===== SETTINGS =====
+    function openSettings(){
+      document.getElementById('apiKeyInput').value=S.apiKey;
+      document.getElementById('injuryInput').value=S.injury;
+      document.querySelectorAll('[id^="eq"]').forEach(cb=>cb.checked=S.equipment.includes(cb.value));
       document.getElementById('settingsModal').classList.add('active');
     }
-    function closeSettings() { document.getElementById('settingsModal').classList.remove('active'); }
-    function saveSettings() {
-      state.apiKey = document.getElementById('apiKeyInput').value.trim();
-      state.injury = document.getElementById('injuryInput').value.trim();
-      state.equipment = [];
-      document.querySelectorAll('[id^="equip"]:checked').forEach(cb => state.equipment.push(cb.value));
-      const f = document.getElementById('polarFatigue').value;
-      const t = document.getElementById('polarTolerance').value;
-      state.polarFatigue = f ? parseInt(f) : null;
-      state.polarTolerance = t ? parseInt(t) : null;
-      state.polarStatus = document.getElementById('polarStatusInput').value;
-      saveState(); updateUI(); closeSettings(); showToast('⚙️ Paramètres enregistrés');
-    }
-    function openNiveau() {
-      document.getElementById('niveauForce').value = state.stats.force;
-      document.getElementById('niveauEndurance').value = state.stats.endurance;
-      document.getElementById('niveauAgility').value = state.stats.agility;
-      document.getElementById('niveauPerception').value = state.stats.perception;
-      document.getElementById('niveauIntelligence').value = state.stats.intelligence;
-      document.getElementById('niveauModal').classList.add('active');
-    }
-    function closeNiveau() { document.getElementById('niveauModal').classList.remove('active'); }
-    function applyNiveauGlobal() {
-      const val = parseInt(document.getElementById('niveauGlobal').value);
-      if (!val||val<1||val>100) { showToast('❌ Niveau invalide (1-100)','error'); return; }
-      ['Force','Endurance','Agility','Perception','Intelligence'].forEach(s => document.getElementById('niveau'+s).value = val);
-      showToast('✅ Niveau global : '+val);
-    }
-    function saveNiveau() {
-      const map = {force:'niveauForce',endurance:'niveauEndurance',agility:'niveauAgility',perception:'niveauPerception',intelligence:'niveauIntelligence'};
-      let valid = true;
-      Object.entries(map).forEach(([stat,id]) => {
-        const val = parseInt(document.getElementById(id).value);
-        if (!val||val<1||val>100) { valid=false; return; }
-        state.stats[stat]=val; state.statsXP[stat]=0;
-      });
-      if (!valid) { showToast('❌ Vérifie les valeurs (1-100)','error'); return; }
-      saveState(); updateUI(); closeNiveau(); showToast('💾 Niveaux enregistrés !');
-    }
-    function openFeedback() { document.getElementById('feedbackModal').classList.add('active'); }
-    function closeFeedback() { document.getElementById('feedbackModal').classList.remove('active'); }
-    function adjustDifficulty(change) {
-      state.difficultyOffset = Math.max(-3, Math.min(3, state.difficultyOffset + change));
-      saveState(); closeFeedback();
-      const msgs = {'-3':'📉 Difficulté fortement réduite','-2':'📉 Difficulté bien réduite','-1':'📉 Légèrement réduite','0':'✅ Difficulté équilibrée','1':'📈 Légèrement augmentée','2':'📈 Bien augmentée','3':'📈 Fortement augmentée'};
-      showToast(msgs[state.difficultyOffset.toString()]);
-    }
-    function resetProgress() {
-      if (!confirm('⚠️ Réinitialiser toute ta progression ?')) return;
-      localStorage.removeItem('hunterSystemState'); location.reload();
+    function closeSettings(){ document.getElementById('settingsModal').classList.remove('active'); }
+    function saveSettings(){
+      S.apiKey=document.getElementById('apiKeyInput').value.trim();
+      S.injury=document.getElementById('injuryInput').value.trim();
+      S.equipment=[];
+      document.querySelectorAll('[id^="eq"]:checked').forEach(cb=>S.equipment.push(cb.value));
+      if(!S.equipment.length) S.equipment=['none'];
+      const sl=parseInt(document.getElementById('startLevelInput').value);
+      if(sl&&sl>1&&avgLevel()===1){
+        ['force','endurance','agility','perception','intelligence'].forEach(s=>{ S.stats[s]=sl; S.statsXP[s]=0; });
+        toast('🎯 Niveau de départ appliqué : '+sl);
+      }
+      save(); updateUI(); closeSettings(); toast('⚙️ Paramètres enregistrés');
     }
 
-    // VOLUME & PROMPT
-    function getVolumeGuide() {
-      const eff = Math.max(1, getAverageLevel()+(state.difficultyOffset||0));
+    // ===== POLAR =====
+    function savePolar(){
+      const f=document.getElementById('inFatigue').value;
+      const t=document.getElementById('inTolerance').value;
+      S.polarFatigue=f?parseInt(f):null;
+      S.polarTolerance=t?parseInt(t):null;
+      S.polarStatus=document.getElementById('inPolarStatus').value;
+      save(); updateUI(); toast('📡 Données Polar enregistrées');
+    }
+
+    // ===== DIFF =====
+    function setDiff(v){
+      if(v===0){ S.diffOffset=0; }
+      else { S.diffOffset=Math.max(-3,Math.min(3,S.diffOffset+v)); }
+      const ids=['fbHard','fbOk','fbEasy'];
+      const cls=['active-hard','active-ok','active-easy'];
+      ids.forEach((id,i)=>{ document.getElementById(id).className='fb-btn'+(v===i-1?' '+cls[i]:''); });
+      save(); updateUI();
+      const msgs={'-3':'📉 Difficulté fortement réduite','-2':'📉 Bien réduite','-1':'📉 Légèrement réduite','0':'✅ Équilibrée','1':'📈 Légèrement augmentée','2':'📈 Bien augmentée','3':'📈 Fortement augmentée'};
+      toast(msgs[S.diffOffset]||'✅ Ajusté');
+    }
+    function resetDiff(){ S.diffOffset=0; save(); updateUI(); toast('✅ Difficulté réinitialisée'); }
+
+    // ===== QUESTS =====
+    function renderQuests(){
+      const w=document.getElementById('questsWrap');
+      const h=document.getElementById('hintWrap');
+      if(!S.todayQuests.length){ w.innerHTML=''; h.style.display='block'; return; }
+      h.style.display='none'; w.innerHTML='';
+      S.todayQuests.forEach((q,i)=>{
+        const d=document.createElement('div');
+        d.className='quest-card'+(S.questsDone[i]?' done':'');
+        d.innerHTML='<div class="quest-head"><div class="quest-name">'+q.name+'</div><div class="quest-xp">+'+q.xp+' XP</div></div>'+
+          '<div class="quest-desc">'+q.description+'</div>'+
+          '<button class="quest-btn" onclick="doneQuest('+i+')" '+(S.questsDone[i]?'disabled':'')+'>'+
+          (S.questsDone[i]?'✓ Terminée':'✓ Marquer comme terminée')+'</button>';
+        w.appendChild(d);
+      });
+    }
+    function doneQuest(i){
+      if(S.questsDone[i]) return;
+      const q=S.todayQuests[i];
+      S.questsDone[i]=true; S.totalDone++;
+      if(q.category==='muscle'){ addStatXP('force',Math.floor(q.xp*0.5)); addStatXP('perception',Math.floor(q.xp*0.3)); addStatXP('agility',Math.floor(q.xp*0.2)); }
+      else if(q.category==='recovery'){ addStatXP('intelligence',q.xp); }
+      // streak
+      const td=today();
+      if(S.questsDone.every(c=>c)){
+        const y=new Date(); y.setDate(y.getDate()-1); const ys=y.toISOString().split('T')[0];
+        if(!S.lastStreakDate||S.lastStreakDate===ys){ S.streak++; S.lastStreakDate=td; }
+        else if(S.lastStreakDate!==td){ S.streak=1; S.lastStreakDate=td; }
+      }
+      // log
+      S.activityLog.unshift({date:td,name:q.name,xp:q.xp,type:q.category});
+      save(); updateUI(); renderQuests();
+      toast('✅ +'+q.xp+' XP — '+q.name);
+    }
+    function completeEndurance(type){
+      const xpV={course:120,badminton:100};
+      const xp=xpV[type];
+      addStatXP('endurance',Math.floor(xp*0.6)); addStatXP('agility',Math.floor(xp*0.4));
+      S.activityLog.unshift({date:today(),name:type==='course'?'🏃 Course':'🏸 Badminton',xp,type:'endurance'});
+      save(); updateUI();
+      toast('✅ +'+xp+' XP — '+(type==='course'?'Course validée !':'Badminton validé !'));
+    }
+
+    // ===== HISTORY =====
+    function renderHistory(){
+      const c=document.getElementById('historyContent');
+      if(!S.activityLog||!S.activityLog.length){ c.innerHTML='<div class="history-empty">Aucune activité enregistrée.<br>Complète tes premières quêtes !</div>'; return; }
+      const byDate={};
+      S.activityLog.forEach(a=>{ if(!byDate[a.date]) byDate[a.date]=[]; byDate[a.date].push(a); });
+      c.innerHTML='';
+      Object.keys(byDate).sort((a,b)=>b.localeCompare(a)).forEach(date=>{
+        const div=document.createElement('div'); div.className='history-day';
+        const d=new Date(date); const label=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+        div.innerHTML='<div class="history-date">'+label+'</div>';
+        byDate[date].forEach(a=>{
+          div.innerHTML+='<div class="history-item"><span class="history-name">'+a.name+'</span><span class="history-xp">+'+a.xp+' XP</span></div>';
+        });
+        c.appendChild(div);
+      });
+    }
+
+    // ===== GENERATE =====
+    function getVolumeGuide(){
+      const eff=Math.max(1,avgLevel()+(S.diffOffset||0));
       let vm=1.0;
-      if(state.polarStatus==='excessif') vm=0.7;
-      else if(state.polarStatus==='maintien') vm=0.9;
-      else if(state.polarStatus==='desentrainement') vm=1.15;
-      else if(state.polarStatus==='recuperation') vm=0.5;
+      if(S.polarStatus==='excessif') vm=0.7;
+      else if(S.polarStatus==='maintien') vm=0.9;
+      else if(S.polarStatus==='desentrainement') vm=1.15;
+      else if(S.polarStatus==='recuperation') vm=0.5;
       let g='';
-      if(eff<=2) g='Débutant strict : 2x8 pompes, 2x12 squats, 2x20sec planche.';
-      else if(eff<=4) g='Débutant : 3x10 pompes, 3x15 squats, 3x30sec planche.';
-      else if(eff<=6) g='Débutant confirmé : 3x12 pompes, 3x18 squats, 3x40sec planche.';
-      else if(eff<=8) g='Intermédiaire bas : 3x15 pompes, 3x20 squats, 3x45sec planche.';
-      else if(eff<=10) g='Intermédiaire : 4x15 pompes, 4x20 squats, 3x60sec planche.';
-      else if(eff<=13) g='Intermédiaire confirmé : 4x18 pompes, 4x22 squats, 4x60sec planche.';
-      else if(eff<=16) g='Avancé bas : 4x20 pompes, 4x25 squats, 4x75sec planche.';
-      else g='Avancé : 5x20 pompes, 5x25 squats, 4x90sec planche.';
-      if(vm!==1.0) g+=' POLAR : Volume à '+Math.round(vm*100)+'% ('+state.polarStatus+').';
+      if(eff<=2) g='2x8 pompes, 2x12 squats, 2x20sec planche.';
+      else if(eff<=4) g='3x10 pompes, 3x15 squats, 3x30sec planche.';
+      else if(eff<=6) g='3x12 pompes, 3x18 squats, 3x40sec planche.';
+      else if(eff<=8) g='3x15 pompes, 3x20 squats, 3x45sec planche.';
+      else if(eff<=10) g='4x15 pompes, 4x20 squats, 3x60sec planche.';
+      else if(eff<=13) g='4x18 pompes, 4x22 squats, 4x60sec planche.';
+      else if(eff<=16) g='4x20 pompes, 4x25 squats, 4x75sec planche.';
+      else g='5x20 pompes, 5x25 squats, 4x90sec planche.';
+      if(vm!==1.0) g+=' Volume à '+Math.round(vm*100)+'% (Polar: '+S.polarStatus+').';
       return g;
     }
-    function getEquipmentString() {
-      if(!state.equipment.length||(state.equipment.length===1&&state.equipment[0]==='none')) return 'Aucun équipement';
-      const l={none:'Poids du corps',pullup:'Barre de traction',rings:'Anneaux',dumbbells:'Haltères',bands:'Bandes élastiques',chair:'Chaise/Table'};
-      return state.equipment.map(e=>l[e]||e).join(', ');
+    function getEquip(){
+      if(!S.equipment.length||(S.equipment.length===1&&S.equipment[0]==='none')) return 'Poids du corps uniquement';
+      const l={none:'Poids du corps',pullup:'Barre traction',rings:'Anneaux',dumbbells:'Haltères',bands:'Élastiques',chair:'Chaise/Table'};
+      return S.equipment.map(e=>l[e]||e).join(', ');
     }
-    function getExercisePool() {
-      const pool = {
-        bodyweight:['pompes classiques','pompes diamant','pompes déclinées','pompes pike','pompes archer','pompes explosives','pompes hindu','dips entre deux chaises','rowing sur table','superman','bird dog','squats classiques','squats sumo','squats bulgares','squats jump','wall sit','fentes avant','fentes arrière','fentes latérales','fentes marchées','pont fessier','pont fessier unilatéral','planche classique','planche latérale','planche dynamique','hollow body hold','dead bug','crunchs bicycle','leg raises','mountain climbers','russian twist','burpees','bear crawl'],
-        pullup:['tractions pronation','tractions supination','tractions australiennes','tractions prise large','hanging knee raise','hanging leg raise','L-sit suspendu'],
+    function getPool(){
+      const p={
+        none:['pompes classiques','pompes diamant','pompes déclinées','pompes pike','pompes archer','pompes explosives','dips entre deux chaises','rowing sur table','superman','bird dog','squats classiques','squats sumo','squats bulgares','squats jump','wall sit','fentes avant','fentes arrière','fentes latérales','pont fessier','pont fessier unilatéral','planche classique','planche latérale','hollow body hold','dead bug','crunchs bicycle','leg raises','mountain climbers','russian twist','burpees','bear crawl'],
+        pullup:['tractions pronation','tractions supination','tractions australiennes','tractions prise large','hanging knee raise','hanging leg raise'],
         rings:['dips aux anneaux','tractions aux anneaux','rows aux anneaux','support hold anneaux'],
         dumbbells:['développé haltères','rowing haltères','curls haltères','élévations latérales','goblet squat','soulevé de terre roumain haltères','développé militaire haltères'],
         bands:['tirage élastique vertical','tirage élastique horizontal','face pull élastique','squat avec bande','curl biceps élastique'],
         chair:['dips sur chaise','step-ups sur chaise','pompes inclinées sur chaise']
       };
-      let avail=[...pool.bodyweight];
-      state.equipment.forEach(eq=>{ if(pool[eq]) avail=avail.concat(pool[eq]); });
-      return avail;
+      let a=[...p.none];
+      S.equipment.forEach(e=>{ if(p[e]&&e!=='none') a=a.concat(p[e]); });
+      return a;
     }
-    function addToHistory(exercises) {
-      const today=getTodayStr();
-      state.exerciseHistory=state.exerciseHistory.filter(h=>(new Date(today)-new Date(h.date))/(1000*60*60*24)<=3);
-      state.exerciseHistory.push({date:today,exercises});
-      saveState();
-    }
-    function getRecentExercises() {
-      const r=[]; state.exerciseHistory.forEach(h=>r.push(...h.exercises)); return r;
-    }
-    function buildPrompt() {
-      const lvl=getAverageLevel();
-      const injury=state.injury?'Blessure : '+state.injury+'. Évite la zone.':'Aucune blessure.';
-      const recent=getRecentExercises();
-      let polarInfo='';
-      if(state.polarStatus){
+    function buildPrompt(){
+      const lvl=avgLevel();
+      const injury=S.injury?'Blessure : '+S.injury+'. Évite la zone.':'Aucune blessure.';
+      let polar='';
+      if(S.polarStatus){
         const pl={productif:'Productif',maintien:'Maintien (volume stable)',excessif:'Excessif (RÉDUIRE 30%)',desentrainement:'Désentraînement (augmenter)',recuperation:'Récupération (étirements uniquement)'};
-        polarInfo='\nPOLAR : Fatigue '+(state.polarFatigue||'N/A')+' / Tolérance '+(state.polarTolerance||'N/A')+' — '+(pl[state.polarStatus]||state.polarStatus);
+        polar='\nPOLAR : Fatigue '+(S.polarFatigue||'N/A')+'/Tolérance '+(S.polarTolerance||'N/A')+' — '+(pl[S.polarStatus]);
       }
-      let diffNote='';
-      if(state.difficultyOffset>0) diffNote='\nTrop facile (+'+state.difficultyOffset+'). Volume max.';
-      else if(state.difficultyOffset<0) diffNote='\nTrop difficile ('+state.difficultyOffset+'). Volume bas.';
-      const rotNote=recent.length>0?'\nÉVITER : '+recent.join(', '):'' ;
-      return 'Tu es le système RPG Fitness Hunter System. Génère le programme quotidien niveau '+lvl+'.\n\n'+
-        'PROFIL : Niveau '+lvl+' | Force '+state.stats.force+' | Endurance '+state.stats.endurance+' | Agilité '+state.stats.agility+' | Perception '+state.stats.perception+' | Intelligence '+state.stats.intelligence+'\n'+
-        'Streak : '+state.streak+' jours | '+injury+'\nÉquipement : '+getEquipmentString()+'\nVolume : '+getVolumeGuide()+polarInfo+diffNote+rotNote+'\n\n'+
-        'EXERCICES DISPONIBLES : '+getExercisePool().join(', ')+'\n\n'+
-        'RÈGLES : 4 quêtes exactement (1 PUSH + 1 PULL/LEGS + 1 CORE/FULLBODY + 1 RÉCUPÉRATION). 5-10 min/quête. Pas de course/vélo/natation. Exercices différents. XP 80-150.\n\n'+
-        'JSON UNIQUEMENT :\n{"advice":"Message 2 phrases.","quests":[{"name":"Nom","description":"X séries Y reps. Conseil.","xp":100,"category":"muscle"},{"name":"Nom","description":"...","xp":110,"category":"muscle"},{"name":"Nom","description":"...","xp":105,"category":"muscle"},{"name":"Récupération Active","description":"Étirement 5 min.","xp":80,"category":"recovery"}]}';
+      let diff='';
+      if(S.diffOffset>0) diff='\nRetour chasseur : trop facile. Volume max.';
+      else if(S.diffOffset<0) diff='\nRetour chasseur : trop difficile. Volume bas.';
+      return 'Tu es le système RPG Hunter System. Programme quotidien pour niveau '+lvl+'.\n'+
+        'Stats : Force '+S.stats.force+' | Endurance '+S.stats.endurance+' | Agilité '+S.stats.agility+' | Perception '+S.stats.perception+' | Intelligence '+S.stats.intelligence+'\n'+
+        'Streak : '+S.streak+' j | '+injury+'\nÉquipement : '+getEquip()+'\nVolume guide : '+getVolumeGuide()+polar+diff+'\n'+
+        'Exercices disponibles : '+getPool().join(', ')+'\n\n'+
+        'RÈGLES : 4 quêtes (1 PUSH + 1 PULL ou LEGS + 1 CORE + 1 RÉCUPÉRATION). 5-10 min/quête. Pas de course/vélo/natation. Exercices différents. XP 80-150.\n\n'+
+        'Réponds UNIQUEMENT en JSON :\n{"advice":"Message motivant 2 phrases.","quests":[{"name":"Nom court","description":"X séries Y reps exercice. 1 conseil forme.","xp":100,"category":"muscle"},{"name":"Nom","description":"...","xp":110,"category":"muscle"},{"name":"Nom","description":"...","xp":105,"category":"muscle"},{"name":"Récupération Active","description":"Étirement ou respiration. Max 5 min.","xp":80,"category":"recovery"}]}';
     }
-
-    async function generateProgram() {
-      if(!state.apiKey){ openSettings(); showToast('⚙️ Entre ta clé API','error'); return; }
-      const btn=document.getElementById('generateBtn');
+    async function generateProgram(){
+      if(!S.apiKey){ openSettings(); toast('⚙️ Entre ta clé API d\'abord','err'); return; }
+      const btn=document.getElementById('genBtn');
       btn.disabled=true;
       document.getElementById('loadingOverlay').classList.add('active');
       try {
         const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
           method:'POST',
-          headers:{'Authorization':'Bearer '+state.apiKey,'Content-Type':'application/json','HTTP-Referer':window.location.href,'X-Title':'Hunter System RPG'},
+          headers:{'Authorization':'Bearer '+S.apiKey,'Content-Type':'application/json','HTTP-Referer':location.href,'X-Title':'Hunter System'},
           body:JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'user',content:buildPrompt()}],temperature:0.7,max_tokens:1200})
         });
         if(!res.ok){ const e=await res.json(); throw new Error(e.error?.message||'Erreur '+res.status); }
         const data=await res.json();
         let raw=data.choices[0].message.content.trim().replace(/```json/g,'').replace(/```/g,'').trim();
-        const s=raw.indexOf('{'),e=raw.lastIndexOf('}');
-        if(s===-1||e===-1) throw new Error('JSON introuvable');
-        raw=raw.substring(s,e+1);
-        const parsed=JSON.parse(raw);
+        const si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
+        if(si===-1||ei===-1) throw new Error('JSON introuvable');
+        const parsed=JSON.parse(raw.substring(si,ei+1));
         if(!parsed.quests||parsed.quests.length!==4) throw new Error('Format invalide');
-        state.todayQuests=parsed.quests;
-        state.todayQuests[0].advice=parsed.advice;
-        state.questsCompleted=new Array(4).fill(false);
-        state.lastGeneratedDate=getTodayStr();
-        const exercises=parsed.quests.map(q=>{ const m=q.description.match(/de ([a-zéèêàâôûç\s]+)/i); return m?m[1].trim():''; }).filter(e=>e);
-        addToHistory(exercises);
-        const y=new Date(); y.setDate(y.getDate()-1);
-        const yStr=y.toISOString().split('T')[0];
-        if(state.lastStreakDate&&state.lastStreakDate!==yStr&&state.lastStreakDate!==getTodayStr()) state.streak=0;
-        saveState(); showAdvice(parsed.advice); renderQuests(); updateUI();
-        btn.textContent='✅ Programme généré aujourd\'hui';
-        document.getElementById('feedbackBtn').style.display='block';
-        document.getElementById('enduranceSection').style.display='block';
-        showToast('⚡ Quêtes générées ! Au combat !');
-      } catch(e) {
-        btn.disabled=false; btn.textContent='⚡ Générer Programme Quotidien';
-        showToast('❌ Erreur : '+e.message,'error'); console.error(e);
+        S.todayQuests=parsed.quests;
+        S.questsDone=new Array(4).fill(false);
+        S.lastGenDate=today();
+        if(parsed.advice){
+          document.getElementById('adviceText').textContent=parsed.advice;
+          document.getElementById('adviceCard').classList.add('show');
+        }
+        save(); updateUI(); renderQuests();
+        toast('⚡ Quêtes générées ! Au combat !');
+      } catch(e){
+        btn.disabled=false; toast('❌ '+e.message,'err'); console.error(e);
       } finally { document.getElementById('loadingOverlay').classList.remove('active'); }
     }
 
-    // DEBUG
-    function setDebugLevel(n) {
-      Object.keys(state.stats).forEach(s=>state.stats[s]=n);
-      Object.keys(state.statsXP).forEach(s=>state.statsXP[s]=250);
-      state.streak=7; saveState(); updateUI(); showToast('🎮 Niveau simulé : '+n);
+    // ===== DEBUG =====
+    function toggleDebug(){ const p=document.getElementById('debugPanel'); p.style.display=p.style.display==='none'?'block':'none'; }
+    function applyDebugVal(n){
+      ['force','endurance','agility','perception','intelligence'].forEach(s=>{ S.stats[s]=n; S.statsXP[s]=250; });
+      S.streak=7; save(); updateUI(); toast('🎮 Niveau simulé : '+n);
     }
-    function applyDebugLevel() {
-      const val=parseInt(document.getElementById('debugLevelInput').value);
-      if(!val||val<1||val>100){ showToast('❌ Niveau invalide','error'); return; }
-      setDebugLevel(val);
+    function applyDebug(){
+      const v=parseInt(document.getElementById('debugInput').value);
+      if(!v||v<1||v>100){ toast('❌ Niveau invalide','err'); return; }
+      applyDebugVal(v);
     }
-    function resetDebug() { localStorage.removeItem('hunterSystemState'); location.reload(); }
+    function resetAll(){
+      if(!confirm('⚠️ Réinitialiser toute la progression ?')) return;
+      localStorage.removeItem('hs3'); location.reload();
+    }
 
-    function init() {
-      loadState(); updateUI(); renderQuests();
-      if(state.todayQuests.length>0&&state.todayQuests[0].advice) showAdvice(state.todayQuests[0].advice);
-      const today=getTodayStr();
-      if(state.lastGeneratedDate&&state.lastGeneratedDate!==today){
-        state.todayQuests=[]; state.questsCompleted=[]; state.lastGeneratedDate=null;
-        saveState(); updateUI(); renderQuests();
+    // ===== INIT =====
+    function init(){
+      load(); updateUI(); renderQuests();
+      if(S.todayQuests.length&&S.todayQuests[0]?.advice){
+        document.getElementById('adviceText').textContent=S.todayQuests[0].advice;
+        document.getElementById('adviceCard').classList.add('show');
+      }
+      if(S.lastGenDate&&S.lastGenDate!==today()){
+        S.todayQuests=[]; S.questsDone=[]; S.lastGenDate=null;
+        save(); updateUI(); renderQuests();
       }
     }
     init();
   </script>
-
-  <!-- DEBUG PANEL -->
-  <div style="text-align:center; margin-top:30px; margin-bottom:10px;">
-    <button onclick="document.getElementById('debugPanel').style.display=document.getElementById('debugPanel').style.display==='none'?'block':'none'"
-      style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#444; padding:8px 15px; border-radius:6px; cursor:pointer; font-size:0.75em;">
-      ⚙ debug
-    </button>
-  </div>
-  <div id="debugPanel" style="display:none; background:#1e293b; padding:20px; border-radius:12px; margin:0 20px 30px; text-align:center;">
-    <p style="color:#aaa; margin-bottom:15px; font-size:0.9em;">🎮 Mode Debug</p>
-    <div style="display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:15px;">
-      <input type="number" id="debugLevelInput" min="1" max="100" placeholder="Niveau..."
-        style="width:130px; padding:10px; background:rgba(0,0,0,0.4); border:2px solid #6366f1; border-radius:8px; color:#fff; font-size:1em; text-align:center;">
-      <button onclick="applyDebugLevel()" style="background:#6366f1; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold;">Appliquer</button>
-    </div>
-    <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:15px;">
-      <button onclick="setDebugLevel(3)"  style="background:#334155; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer;">Niv. 3</button>
-      <button onclick="setDebugLevel(8)"  style="background:#334155; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer;">Niv. 8</button>
-      <button onclick="setDebugLevel(15)" style="background:#334155; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer;">Niv. 15</button>
-      <button onclick="setDebugLevel(25)" style="background:#334155; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer;">Niv. 25</button>
-      <button onclick="resetDebug()"      style="background:#ff4757; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer;">Reset</button>
-    </div>
-  </div>
   </body>
   </html>
